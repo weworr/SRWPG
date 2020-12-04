@@ -45,6 +45,9 @@ def projectileMotionWithoutResistance(initialHeight, alpha, gravity, initialVelo
         - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     )
 
-    plt.plot(x, y)
-    plt.xlim(0, range + 0.1 * range)
-    plt.show()
+ # `  plt.plot(x, y)
+ #    plt.xlim(0, range + 0.1 * range)
+ #    plt.show()
+
+    return {"x": x, "y": y}
+
