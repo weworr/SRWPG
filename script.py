@@ -29,7 +29,6 @@ canvas.get_tk_widget().grid(padx=5, pady=5)
 fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
 fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
 
-
 # region Velocity
 Label(rightFrame, text="Velocity: ", font=fontStyleLabel).grid(row=0, column=0)
 userInputVelocity = Entry(rightFrame, width=18, font=fontStyleInteractive)
