@@ -6,8 +6,7 @@ from modules import pmwr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 100)  # Podaje słownik X i Y
-xd=8+9
+XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Podaje słownik X i Y
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
@@ -36,7 +35,7 @@ userInputVelocity = Entry(rightFrame, width=18, font=fontStyleInteractive)
 userInputVelocity.grid(row=0, column=1, columnspan=2)
 
 cbVelocityS_value = StringVar()
-cbVelocityS = ttk.Combobox(rightFrame,textvariable=cbVelocityS_value,width=3,font=fontStyleInteractive,state="readonly")
+cbVelocityS = ttk.Combobox(rightFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly")
 cbVelocityS["values"] = ("mm", "cm", "m", "km")
 cbVelocityS.current(2)
 cbVelocityS.grid(row=0, column=3)
@@ -44,7 +43,7 @@ cbVelocityS.grid(row=0, column=3)
 Label(rightFrame, text="/", font=fontStyleLabel).grid(row=0, column=4)
 
 cbVelocityT_value = StringVar()
-cbVelocityT = ttk.Combobox(rightFrame,textvariable=cbVelocityT_value,width=3,font=fontStyleInteractive,state="readonly")
+cbVelocityT = ttk.Combobox(rightFrame, textvariable=cbVelocityT_value, width=3, font=fontStyleInteractive, state="readonly")
 cbVelocityT["values"] = ("ms", "s", "min", "h")
 cbVelocityT.current(1)
 cbVelocityT.grid(row=0, column=5)
@@ -81,15 +80,20 @@ userInputAngle.grid(row=3, column=1, columnspan=2)
 Label(rightFrame, text="m/s", font=fontStyleLabel).grid(row=3, column=3)
 # endregion
 
+
+def SubmitButton():
+    print("hello")
+
+
+
 # region Buttons
 Label(rightFrame, text="").grid(row=4, column=0)
 
 save = Button(rightFrame,text="Save to File",width=15,font=fontStyleInteractive)
 save.grid(row=5, column=0, columnspan=2, padx=15)
 
-enter = Button(rightFrame, text="Enter", width=15, font=fontStyleInteractive)
+enter = Button(rightFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
 enter.grid(row=5, column=2, columnspan=5, padx=15)
 # endregion
 
-# window.geometry("1920x1080") rozmiar okna
 window.mainloop()
