@@ -25,9 +25,10 @@ def velocity(initialVelocity, alpha, gravity, time):
     xVelocity = initialVelocity * np.cos(alpha)
     yVelocity = initialVelocity * np.sin(alpha) - gravity * time
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
+    return velocity
 
 
-def projectileMotionWithoutResistance(initialHeight, alpha, gravity, initialVelocity):
+def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)

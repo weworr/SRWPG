@@ -5,16 +5,27 @@ import numpy as np
 from modules import pmwr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from tkinter import messagebox as mbox
+from modules import calculations as calc
 
 XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Podaje słownik X i Y
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
 
-# leftFrame = Frame(window)
-# leftFrame.grid(row=0, column=0)
+
 rightFrame = Frame(window)
-rightFrame.pack(side="right", expand="true", fill="both")
+rightFrame.pack(side="right", expand="false", fill="both")
+
+rightBottomFrame = Frame(rightFrame)
+rightBottomFrame.pack(side="bottom")
+
+rightTopFrame = Frame(rightFrame)
+rightTopFrame.pack(side="top")
+
+windowWidth = Frame(rightFrame, height=1, width=400)
+windowWidth.pack()
+
 
 fig = plt.Figure()  # deklaracja figury
 # tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
@@ -29,71 +40,137 @@ canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
 fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
 
+Label(rightTopFrame).grid(row=0)
+
 # region Velocity
-Label(rightFrame, text="Velocity: ", font=fontStyleLabel).grid(row=0, column=0)
-userInputVelocity = Entry(rightFrame, width=18, font=fontStyleInteractive)
-userInputVelocity.grid(row=0, column=1, columnspan=2)
+Label(rightTopFrame, text="Velocity: ", font=fontStyleLabel).grid(row=1, column=0)
+userInputVelocity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputVelocity.grid(row=1, column=1, columnspan=2)
 
 cbVelocityS_value = StringVar()
-cbVelocityS = ttk.Combobox(rightFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly")
+cbVelocityS = ttk.Combobox(rightTopFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
 cbVelocityS["values"] = ("mm", "cm", "m", "km")
 cbVelocityS.current(2)
-cbVelocityS.grid(row=0, column=3)
+cbVelocityS.grid(row=1, column=3)
 
-Label(rightFrame, text="/", font=fontStyleLabel).grid(row=0, column=4)
+Label(rightTopFrame, text="/", font=fontStyleLabel).grid(row=1, column=4)
 
 cbVelocityT_value = StringVar()
-cbVelocityT = ttk.Combobox(rightFrame, textvariable=cbVelocityT_value, width=3, font=fontStyleInteractive, state="readonly")
+cbVelocityT = ttk.Combobox(rightTopFrame, textvariable=cbVelocityT_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
 cbVelocityT["values"] = ("ms", "s", "min", "h")
 cbVelocityT.current(1)
-cbVelocityT.grid(row=0, column=5)
+cbVelocityT.grid(row=1, column=5)
 # endregion Velocity
 
 # region Height
-Label(rightFrame, text="Height: ", font=fontStyleLabel).grid(row=1, column=0)
-userInputHeight = Entry(rightFrame, width=18, font=fontStyleInteractive)
-userInputHeight.grid(row=1, column=1, columnspan=2)
+Label(rightTopFrame, text="Height: ", font=fontStyleLabel).grid(row=2, column=0)
+userInputHeight = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputHeight.grid(row=2, column=1, columnspan=2)
 
 cbHeight_value = StringVar()
-cbHeight = ttk.Combobox(rightFrame,textvariable=cbHeight_value, width=3,font=fontStyleInteractive,state="readonly")
+cbHeight = ttk.Combobox(rightTopFrame, textvariable=cbHeight_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
 cbHeight["values"] = ("mm", "cm", "m", "km")
 cbHeight.current(2)
-cbHeight.grid(row=1, column=3)
+cbHeight.grid(row=2, column=3)
 # endregion
 
 # region Angle
-Label(rightFrame, text="Angle: ", font=fontStyleLabel).grid(row=2, column=0)
-userInputAngle = Entry(rightFrame, width=18, font=fontStyleInteractive)
-userInputAngle.grid(row=2, column=1, columnspan=2)
+Label(rightTopFrame, text="Angle: ", font=fontStyleLabel, justify="center").grid(row=3, column=0)
+userInputAngle = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputAngle.grid(row=3, column=1, columnspan=2)
 
 cbAngle_value = StringVar()
-cbAngle = ttk.Combobox(rightFrame,textvariable=cbAngle_value,width=3,font=fontStyleInteractive,state="readonly")
-cbAngle["values"] = ("°", "rad")
+cbAngle = ttk.Combobox(rightTopFrame, textvariable=cbAngle_value, width=5, font=fontStyleInteractive, state="readonly", justify="center")
+cbAngle["values"] = ("°", "rad", "rad·π")
 cbAngle.current(0)
-cbAngle.grid(row=2, column=3)
+cbAngle.grid(row=3, column=3, columnspan=2)
 # endregion
 
 # region Gravity
-Label(rightFrame, text="Gravity: ", font=fontStyleLabel).grid(row=3, column=0)
-userInputAngle = Entry(rightFrame, width=18, font=fontStyleInteractive)
-userInputAngle.grid(row=3, column=1, columnspan=2)
-Label(rightFrame, text="m/s", font=fontStyleLabel).grid(row=3, column=3)
+Label(rightTopFrame, text="Gravity: ", font=fontStyleLabel).grid(row=4, column=0)
+userInputGravity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputGravity.insert(END, "9.80665")
+userInputGravity.grid(row=4, column=1, columnspan=2)
+Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 # endregion
 
 
+userInputVelocity.insert(END, "9.80665")
+userInputHeight.insert(END, "9.80665")
+userInputAngle.insert(END, "9.80665")
+
+
+def Func():
+    from numpy import pi
+
+    try:
+        whichValueError = " velocity "
+        velocity = float(userInputVelocity.get())
+
+        whichValueError = " height "
+        height = float(userInputHeight.get())
+
+        whichValueError = " angle "
+        angle = eval(userInputAngle.get())
+
+        whichValueError = " gravity "
+        gravity = float(userInputGravity.get())
+
+    except ValueError:
+        mbox.showerror("Error", "Wrong" + whichValueError + "value")
+        return False
+
+    velocitySUnit = cbVelocityS.get()
+    velocityTUnit = cbVelocityT.get()
+    heightUnit = cbHeight.get()
+    angleUnit = cbAngle.get()
+
+    velocity = calc.UnitConversionT(calc.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
+    height = calc.UnitConversionS(height, heightUnit)
+    try:
+        angle = calc.UnitConversionA(angle, angleUnit)
+        if -pi / 2 > angle or angle > pi / 2:
+            raise ValueError
+    except ValueError:
+        mbox.showerror("Error", "Wrong angle value, pick value from -90° to 90°")
+        return False
+    return {"velocity": velocity, "height": height, "angle": angle, "gravity": gravity}
+
+
+ListOfParameters = {}
+
+
 def SubmitButton():
-    print("hello")
+    ListOfParameters = Func()
+    if not ListOfParameters:
+        return
 
-
+    XY = pmwr.projectileMotionWithoutResistance(ListOfParameters["velocity"], ListOfParameters["height"], ListOfParameters["angle"], ListOfParameters["gravity"])
+    graph.clear()
+    graph.set_title("Some title")
+    graph.plot(XY["x"], XY["y"])
+    fig.canvas.draw_idle()
+    Label(rightBottomFrame, text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], 10), font=fontStyleInteractive).grid(row=0, column=2)
 
 # region Buttons
-Label(rightFrame, text="").grid(row=4, column=0)
+Label(rightTopFrame, text="").grid(row=5, column=0)
 
-save = Button(rightFrame,text="Save to File",width=15,font=fontStyleInteractive)
-save.grid(row=5, column=0, columnspan=2, padx=15)
+save = Button(rightTopFrame, text="Save to File", width=15, font=fontStyleInteractive)
+save.grid(row=6, column=0, columnspan=2, padx=15)
 
-enter = Button(rightFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
-enter.grid(row=5, column=2, columnspan=5, padx=15)
+enter = Button(rightTopFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
+enter.grid(row=6, column=2, columnspan=5, padx=15)
+# endregion
+
+
+Label(rightTopFrame).grid()
+horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
+horizontalLine.pack()
+
+
+# region Outcome
+Label(rightBottomFrame, text="Velocity: ", font=fontStyleLabel).grid(row=0, column=0)
+
 # endregion
 
 window.mainloop()
