@@ -6,7 +6,7 @@ from modules import pmwr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Podaje słownik X i Y
+XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
@@ -23,7 +23,6 @@ graph.set_title("Some title")
 graph.plot(XY["x"], XY["y"])
 canvas = FigureCanvasTkAgg(fig, master=window)  # ustawianie
 canvas.draw()
-
 canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 
 fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
@@ -60,6 +59,7 @@ cbHeight["values"] = ("mm", "cm", "m", "km")
 cbHeight.current(2)
 cbHeight.grid(row=1, column=3)
 # endregion
+
 
 # region Angle
 Label(rightFrame, text="Angle: ", font=fontStyleLabel).grid(row=2, column=0)
