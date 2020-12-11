@@ -2,13 +2,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-class TanError(Exception):
-    pass
-
-
-def tan(x):
+def cos(x):
     if x % (np.pi / 2) == 0:
-        raise TanError
+        return 0
+    else:
+        return np.tan(x)
 
 
 def maxHeight(A, B, C, x):
@@ -30,25 +28,29 @@ def velocity(initialVelocity, alpha, gravity, time):
 
 def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
-    A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
-    B = np.tan(alpha)
-    C = initialHeight
+    if (alpha == np.pi / 2):    #plt.stem(x,y)
+        height = (initialVelocity ** 2) / (2 * gravity)
+        return {"x": [0], "y": [height]}
+        
+    elif (alpha == -1 * np.pi / 2): #plt.stem(x,y)
+        height = initialHeight
+        return {"x":[0],"y":[initialHeight]}
+    else:
+        A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
+        B = np.tan(alpha)
+        C = initialHeight
 
-    quadraticEquation = [A, B, C]
-    roots = np.roots(quadraticEquation)
-    range = max(roots)
-    height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
+        quadraticEquation = [A, B, C]
+        roots = np.roots(quadraticEquation)
+        range = max(roots)
+        height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
-    x = np.linspace(0, range, 1000)
-    y = (
-        initialHeight
-        + np.tan(alpha) * x
-        - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
-    )
+        x = np.linspace(0, range, 1000)
+        y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
 
  # `  plt.plot(x, y)
  #    plt.xlim(0, range + 0.1 * range)
  #    plt.show()
 
-    return {"x": x, "y": y}
+        return {"x": x, "y": y}
 
