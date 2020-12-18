@@ -6,13 +6,12 @@ from modules import pmwr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
-from modules import calculations as calc
+from modules import conversion as conv
 
 XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
-
 
 rightFrame = Frame(window)
 rightFrame.pack(side="right", expand="false", fill="both")
@@ -100,7 +99,7 @@ userInputHeight.insert(END, "9.80665")
 userInputAngle.insert(END, "9.80665")
 
 
-def Func():
+def GetListOfParameters():
     from numpy import pi
 
     try:
@@ -119,16 +118,19 @@ def Func():
     except ValueError:
         mbox.showerror("Error", "Wrong" + whichValueError + "value")
         return False
+    except SyntaxError:
+        mbox.showerror("Error", "Wrong" + whichValueError + "value")
+        return False
 
     velocitySUnit = cbVelocityS.get()
     velocityTUnit = cbVelocityT.get()
     heightUnit = cbHeight.get()
     angleUnit = cbAngle.get()
 
-    velocity = calc.UnitConversionT(calc.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
-    height = calc.UnitConversionS(height, heightUnit)
+    velocity = conv.UnitConversionT(conv.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
+    height = conv.UnitConversionS(height, heightUnit)
     try:
-        angle = calc.UnitConversionA(angle, angleUnit)
+        angle = conv.UnitConversionA(angle, angleUnit)
         if -pi / 2 > angle or angle > pi / 2:
             raise ValueError
     except ValueError:
@@ -140,8 +142,24 @@ def Func():
 ListOfParameters = {}
 
 
+def ShowResultsInterface():
+    ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.0, to=10.0, orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4,
+                   resolution=0.01)
+    Label(rightBottomFrame, text="Velocity", font=fontStyleLabel).grid(row=1, column=0)
+    ShowResultsInterface.slider.grid(row=0, column=1)
+    return
+
+
+def ShowValuesOfSlider(self):
+    ListOfParameters = GetListOfParameters()
+    Label(rightBottomFrame,
+          text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], ShowResultsInterface.slider.get()),
+          font=fontStyleInteractive).grid(row=1, column=1)
+
+
+
 def SubmitButton():
-    ListOfParameters = Func()
+    ListOfParameters = GetListOfParameters()
     if not ListOfParameters:
         return
 
@@ -150,7 +168,8 @@ def SubmitButton():
     graph.set_title("Some title")
     graph.plot(XY["x"], XY["y"])
     fig.canvas.draw_idle()
-    Label(rightBottomFrame, text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], 10), font=fontStyleInteractive).grid(row=0, column=2)
+    ShowResultsInterface()
+
 
 # region Buttons
 Label(rightTopFrame, text="").grid(row=5, column=0)
@@ -166,11 +185,5 @@ enter.grid(row=6, column=2, columnspan=5, padx=15)
 Label(rightTopFrame).grid()
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
-
-
-# region Outcome
-Label(rightBottomFrame, text="Velocity: ", font=fontStyleLabel).grid(row=0, column=0)
-
-# endregion
 
 window.mainloop()
