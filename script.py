@@ -6,7 +6,7 @@ from modules import pmwr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
-from modules import calculations as calc
+from modules import conversions as conv
 
 XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
 window = Tk()
@@ -125,10 +125,10 @@ def Func():
     heightUnit = cbHeight.get()
     angleUnit = cbAngle.get()
 
-    velocity = calc.UnitConversionT(calc.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
-    height = calc.UnitConversionS(height, heightUnit)
+    velocity = conv.UnitConversionT(conv.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
+    height = conv.UnitConversionS(height, heightUnit)
     try:
-        angle = calc.UnitConversionA(angle, angleUnit)
+        angle = conv.UnitConversionA(angle, angleUnit)
         if -pi / 2 > angle or angle > pi / 2:
             raise ValueError
     except ValueError:
@@ -139,6 +139,10 @@ def Func():
 
 ListOfParameters = {}
 
+def resetGraph():
+    graph.clear()
+    graph.set_title("Some title")
+
 
 def SubmitButton():
     ListOfParameters = Func()
@@ -146,11 +150,21 @@ def SubmitButton():
         return
 
     XY = pmwr.projectileMotionWithoutResistance(ListOfParameters["velocity"], ListOfParameters["height"], ListOfParameters["angle"], ListOfParameters["gravity"])
-    graph.clear()
-    graph.set_title("Some title")
-    graph.plot(XY["x"], XY["y"])
-    fig.canvas.draw_idle()
-    Label(rightBottomFrame, text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], 10), font=fontStyleInteractive).grid(row=0, column=2)
+    if (ListOfParameters["angle"] == np.pi / 2):
+        resetGraph()
+        graph.vlines(x=0, ymin=ListOfParameters["height"], ymax=XY["y"], colors="#3383BB")       
+        fig.canvas.draw_idle()
+    
+    elif (ListOfParameters["angle"] == -1 * np.pi / 2):
+        resetGraph()
+        graph.vlines(x=0, ymin=0, ymax=XY["y"], colors="#3383BB")
+        fig.canvas.draw_idle()
+    else:
+        resetGraph()
+        graph.plot(XY["x"], XY["y"])
+        fig.canvas.draw_idle()
+    
+    Label(rightBottomFrame, text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], 1), font=fontStyleInteractive).grid(row=0, column=2)
 
 # region Buttons
 Label(rightTopFrame, text="").grid(row=5, column=0)
