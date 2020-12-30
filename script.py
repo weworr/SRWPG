@@ -195,31 +195,11 @@ def ComboboxEvent(self):
     ComboboxEvent.slider = Scale(rightBottomFrame, from_=0.00, to=ComboboxEvent.sliderRange, orient=HORIZONTAL,
                                         command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
 
-<<<<<<< HEAD
-    Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=3)
-    ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.00,
-                                        to=pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
-                                        orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
-    ShowResultsInterface.slider.grid(row=1, column=4, rowspan=2)
-
-    global zmienna
-    zmienna.destroy()
-    zmienna = Label(rightBottomFrame, text="%.2f" % pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
-          font=fontStyleInteractive)
-    zmienna.grid(row=2, column=5)
-
-    global zmienna2
-    zmienna2.destroy()
-    zmienna2 = Label(rightBottomFrame, text=LOP["velocity"], font=fontStyleInteractive)
-    zmienna2.grid(row=3, column=1, columnspan=4)
-    
-=======
     ComboboxEvent.slider.grid(row=1, column=1, rowspan=2)
 
     ShowLabelWithValues("%.2f" % ComboboxEvent.sliderRange,
                         2, 2, 1, 1, "right.rightbottom.range")
 
->>>>>>> 0daa3ce13cacb5db63e36f962b1325e323877b25
 
 def ShowResultsInterface():
     Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=0)
