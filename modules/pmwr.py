@@ -6,6 +6,7 @@ from modules.conversion import sin,cos
 def maxHeight(A, B, C, x):
     return A * x ** 2 + B * x + C
 
+<<<<<<< HEAD
 def acceleration(gravity):
     xAcceleration = 0
     yAcceleration = -1 * gravity
@@ -21,13 +22,27 @@ def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
     quadraticEquation = [A, B, C]
     roots = np.roots(quadraticEquation)
     return max(roots)
+=======
+>>>>>>> 0daa3ce13cacb5db63e36f962b1325e323877b25
 
 def velocity(initialVelocity, alpha, gravity, time):
+    if time == 0.0:
+        return initialVelocity
     xVelocity = initialVelocity * np.cos(alpha)
     yVelocity = initialVelocity * np.sin(alpha) - gravity * time
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
-    
     return velocity
+
+
+def endTime(initialVelocity, initialHeight, alpha, gravity):
+    A = -1 * gravity / 2
+    B = initialVelocity * sin(alpha)
+    C = initialHeight
+
+    quadraticEquation = [A, B, C]
+    roots = np.roots(quadraticEquation)
+    return max(roots)
+
 
 def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     #alpha w radianach
@@ -37,6 +52,13 @@ def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     return {"x": x, "y": y}
 
 
+<<<<<<< HEAD
+=======
+def xToTime(x, initialVelocity, alpha):
+    return x / (initialVelocity * cos(alpha))
+
+
+>>>>>>> 0daa3ce13cacb5db63e36f962b1325e323877b25
 def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)

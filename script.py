@@ -9,12 +9,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
 
-# List of parameters global
-LOP = {}
-
-######################################################
-# ERROR HALO, jak sie t ustawi to slider i tak chodzi do max x
-######################################################
 
 def GetListOfParameters():
     from numpy import pi
@@ -32,11 +26,23 @@ def GetListOfParameters():
         whichValueError = " gravity "
         gravity = float(userInputGravity.get())
 
+        whichValueError = " resistance "
+        resistance = float(userInputResistance.get())
+
     except ValueError:
         mbox.showerror("Error", "Wrong" + whichValueError + "value")
         return False
+
     except SyntaxError:
         mbox.showerror("Error", "Wrong" + whichValueError + "value")
+        return False
+
+    if gravity <= 0:
+        mbox.showerror("Error", "Gravity can't be lower or equal to 0")
+        return False
+
+    if resistance < 0:
+        mbox.showerror("Error", "Resistance can't be lower than 0")
         return False
 
     velocitySUnit = cbVelocityS.get()
@@ -63,10 +69,10 @@ window.title("Projectile motion")
 window.config(bg="#FFFFFF")
 
 # region Frames
-rightFrame = Frame(window)
+rightFrame = Frame(window, name="right")
 rightFrame.pack(side="right", expand="false", fill="both")
 
-rightBottomFrame = Frame(rightFrame)
+rightBottomFrame = Frame(rightFrame, name="rightbottom")
 rightBottomFrame.pack(side="bottom")
 
 rightTopFrame = Frame(rightFrame)
@@ -87,14 +93,15 @@ canvas.draw()
 canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 # endregion
 
+# region Global Variables
+LOP = {}  # List of parameters global
+cbPoint_value = StringVar()  # Musi być poza funkcją
+# endregion
+
+# region Font Styles
 fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
 fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
 fontStyleInteractive2 = tkFont.Font(family="Lucida Grande", size=8)
-
-# region Global Variables
-cbPoint_value = StringVar()  # Musi być poza funkcją
-zmienna = Label()  # global
-zmienna2 = Label()
 # endregion
 
 Label(rightTopFrame).grid(row=0)  # Odstęp od góry okienka
@@ -150,38 +157,45 @@ userInputGravity.grid(row=4, column=1, columnspan=2)
 Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 # endregion
 
-# region InitialValues
-horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
-horizontalLine.pack()
+# region Resistance
+Label(rightTopFrame, text="Resistance: ", font=fontStyleLabel).grid(row=5, column=0)
+userInputResistance = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputResistance.grid(row=5, column=1, columnspan=2)
+# endregion
 
+# region InitialValues
 userInputVelocity.insert(END, "2")
 userInputHeight.insert(END, "10")
 userInputAngle.insert(END, "45")
 userInputGravity.insert(END, "9.81")
+userInputResistance.insert(END, "0")
 #endregion
 
+horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
+horizontalLine.pack()
+
 def ChangeSliderValue():
-    ShowResultsInterface.slider.set(float(ShowResultsInterface.userInputPoint.get()))
+    ComboboxEvent.slider.set(float(ShowResultsInterface.userInputPoint.get()))
 
 
-def ShowResultsInterface():
-    Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabel).grid(row=0, column=0)
+def ShowLabelWithValues(text, row, column, rowspan, columnspan, name):
+    try:
+        window.nametowidget(name).destroy()
+    except KeyError:
+        pass
+    Label(rightBottomFrame, font=fontStyleInteractive, text=text, name=name.split('.')[2]).\
+        grid(row=row, column=column, rowspan=rowspan, columnspan=columnspan)
 
-    cbPoint = ttk.Combobox(rightBottomFrame, textvariable=cbPoint_value, width=3, font=fontStyleInteractive,
-                            state="readonly", justify="center")
-    cbPoint["values"] = ("x", "t")
-    cbPoint.current(0)
-    cbPoint.grid(row=0, column=1)
-    # region Slider
-    ShowResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
-    ShowResultsInterface.userInputPoint.insert(END,"0.0")
-    ShowResultsInterface.userInputPoint.grid(row=2, column=0, sticky="E", padx=3)
 
-    sliderValue = Button(rightBottomFrame, text="Submit", width=8, font=fontStyleInteractive2, command=ChangeSliderValue)
-    sliderValue.grid(row=2, column=1, sticky="W")
+def ComboboxEvent(self):
+    if StartUpResultsInterface.cbPoint.get() == 't':
+        ComboboxEvent.sliderRange = pmwr.endTime(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    else:
+        ComboboxEvent.sliderRange = pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    ComboboxEvent.slider = Scale(rightBottomFrame, from_=0.00, to=ComboboxEvent.sliderRange, orient=HORIZONTAL,
+                                        command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
 
-    Label(rightBottomFrame, text="").grid(row=2, column=2)
-
+<<<<<<< HEAD
     Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=3)
     ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.00,
                                         to=pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
@@ -199,24 +213,52 @@ def ShowResultsInterface():
     zmienna2 = Label(rightBottomFrame, text=LOP["velocity"], font=fontStyleInteractive)
     zmienna2.grid(row=3, column=1, columnspan=4)
     
+=======
+    ComboboxEvent.slider.grid(row=1, column=1, rowspan=2)
 
-    # endregion
+    ShowLabelWithValues("%.2f" % ComboboxEvent.sliderRange,
+                        2, 2, 1, 1, "right.rightbottom.range")
 
-    # region show
-    Label(rightBottomFrame, text="Velocity", font=fontStyleLabel).grid(row=3, column=0)
+>>>>>>> 0daa3ce13cacb5db63e36f962b1325e323877b25
 
+def ShowResultsInterface():
+    Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=0)
 
-    # endregion
+    ShowResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
+    ShowResultsInterface.userInputPoint.insert(END, "0.0")
+    ShowResultsInterface.userInputPoint.grid(row=2, column=4, sticky="E", padx=3)
+
+    sliderValue = Button(rightBottomFrame, text="Submit", width=8, font=fontStyleInteractive2,
+                         command=ChangeSliderValue)
+    sliderValue.grid(row=2, column=5)
+
+    Label(rightBottomFrame, text="Velocity:", font=fontStyleLabel).grid(row=3, column=0)
+    ShowLabelWithValues(LOP["velocity"], 3, 1, 1, 4, "right.rightbottom.velocity")
 
 
 def ShowValuesOfSlider(self):
     ShowResultsInterface.userInputPoint.delete(0, END)
-    ShowResultsInterface.userInputPoint.insert(END, ShowResultsInterface.slider.get())
-    
-    global zmienna2
-    zmienna2.destroy()
-    zmienna2 = Label(rightBottomFrame, text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], float(ShowResultsInterface.userInputPoint.get())), font=fontStyleInteractive)
-    zmienna2.grid(row=3, column=1, columnspan=4)
+    ShowResultsInterface.userInputPoint.insert(END, ComboboxEvent.slider.get())
+    if StartUpResultsInterface.cbPoint.get() == 't':
+        time = float(ShowResultsInterface.userInputPoint.get())
+    else:
+        time = pmwr.xToTime(float(ShowResultsInterface.userInputPoint.get()), LOP["velocity"], LOP["angle"])
+
+    ShowLabelWithValues(pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], time), 3, 1, 1, 4, "right.rightbottom.velocity")
+
+
+def StartUpResultsInterface():
+
+    Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabel).grid(row=0, column=0)
+
+    StartUpResultsInterface.cbPoint = ttk.Combobox(rightBottomFrame, textvariable=cbPoint_value, width=3, font=fontStyleInteractive,
+                           state="readonly", justify="center")
+    StartUpResultsInterface.cbPoint["values"] = ("x", "t")
+    StartUpResultsInterface.cbPoint.current(0)
+    StartUpResultsInterface.cbPoint.bind("<<ComboboxSelected>>", ComboboxEvent)
+    StartUpResultsInterface.cbPoint.grid(row=0, column=1)
+    ComboboxEvent(ComboboxEvent)
+    ShowResultsInterface()
 
 
 def SubmitButton():
@@ -240,18 +282,16 @@ def SubmitButton():
         graph.plot(XY["x"], XY["y"])
         fig.canvas.draw_idle()
 
-    ShowResultsInterface()
+    StartUpResultsInterface()
+
 
 # region Buttons
-Label(rightTopFrame, text="").grid(row=5, column=0)
-
 save = Button(rightTopFrame, text="Save to File", width=15, font=fontStyleInteractive)
 save.grid(row=6, column=0, columnspan=2, padx=15)
 
 enter = Button(rightTopFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
 enter.grid(row=6, column=2, columnspan=5, padx=15)
 # endregion
-
 
 Label(rightTopFrame).grid()
 window.mainloop()
