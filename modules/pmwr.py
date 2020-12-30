@@ -20,20 +20,24 @@ def maxHeight(A, B, C, x):
     return A * x ** 2 + B * x + C
 
 
-def acceleration(gravity):
-    xAcceleration = 0
-    yAcceleration = -1 * gravity
-    acceleration = gravity
-    
-    return acceleration
-
-
 def velocity(initialVelocity, alpha, gravity, time):
+    if time == 0.0:
+        return initialVelocity
     xVelocity = initialVelocity * np.cos(alpha)
     yVelocity = initialVelocity * np.sin(alpha) - gravity * time
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
-    
     return velocity
+
+
+def endTime(initialVelocity, initialHeight, alpha, gravity):
+    A = -1 * gravity / 2
+    B = initialVelocity * sin(alpha)
+    C = initialHeight
+
+    quadraticEquation = [A, B, C]
+    roots = np.roots(quadraticEquation)
+    return max(roots)
+
 
 def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     #alpha w radianach
@@ -43,7 +47,11 @@ def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     return {"x": x, "y": y}
 
 
-def range_calculation(initialVelocity, initialHeight, alpha, gravity):
+def xToTime(x, initialVelocity, alpha):
+    return x / (initialVelocity * cos(alpha))
+
+
+def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)
     C = initialHeight
@@ -63,7 +71,7 @@ def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gra
         return {"x": 0, "y": initialHeight}
     
     else:
-        range = range_calculation(initialVelocity, initialHeight, alpha, gravity)
+        range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
         # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
         x = np.linspace(0, range, 1000)
