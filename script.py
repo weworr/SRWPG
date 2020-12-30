@@ -11,6 +11,9 @@ from modules import conversion as conv
 # List of parameters global
 LOP = {}
 
+######################################################
+# ERROR HALO, jak sie t ustawi to slider i tak chodzi do max x
+######################################################
 
 def GetListOfParameters():
     from numpy import pi
@@ -52,12 +55,12 @@ def GetListOfParameters():
     return {"velocity": velocity, "height": height, "angle": angle, "gravity": gravity}
 
 
-XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
+XY = pmwr.projectileMotionWithoutResistance(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
 
-#region Frames
+# region Frames
 rightFrame = Frame(window)
 rightFrame.pack(side="right", expand="false", fill="both")
 
@@ -69,8 +72,9 @@ rightTopFrame.pack(side="top")
 
 windowWidth = Frame(rightFrame, height=1, width=400)
 windowWidth.pack()
-#endregion
+# endregion
 
+# region Graph
 fig = plt.Figure()  # deklaracja figury
 # tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
 graph = fig.add_subplot()
@@ -79,6 +83,7 @@ graph.plot(XY["x"], XY["y"])
 canvas = FigureCanvasTkAgg(fig, master=window)  # ustawianie
 canvas.draw()
 canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
+# endregion
 
 fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
 fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
@@ -86,7 +91,8 @@ fontStyleInteractive2 = tkFont.Font(family="Lucida Grande", size=8)
 
 # region Global Variables
 cbPoint_value = StringVar()  # Musi być poza funkcją
-zmienna = Label(rightBottomFrame)  # global
+zmienna = Label()  # global
+zmienna2 = Label()
 # endregion
 
 Label(rightTopFrame).grid(row=0)  # Odstęp od góry okienka
@@ -138,18 +144,19 @@ cbAngle.grid(row=3, column=3, columnspan=2)
 # region Gravity
 Label(rightTopFrame, text="Gravity: ", font=fontStyleLabel).grid(row=4, column=0)
 userInputGravity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
-userInputGravity.insert(END, "9.80665")
 userInputGravity.grid(row=4, column=1, columnspan=2)
 Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 # endregion
 
+# region InitialValues
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
 
-userInputVelocity.insert(END, "9.80665")
-userInputHeight.insert(END, "9.80665")
-userInputAngle.insert(END, "9.80665")
-
+userInputVelocity.insert(END, "2")
+userInputHeight.insert(END, "10")
+userInputAngle.insert(END, "45")
+userInputGravity.insert(END, "9.81")
+#endregion
 
 def ChangeSliderValue():
     ShowResultsInterface.slider.set(float(ShowResultsInterface.userInputPoint.get()))
@@ -165,6 +172,7 @@ def ShowResultsInterface():
     cbPoint.grid(row=0, column=1)
     # region Slider
     ShowResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
+    ShowResultsInterface.userInputPoint.insert(END,"0.0")
     ShowResultsInterface.userInputPoint.grid(row=2, column=0, sticky="E", padx=3)
 
     sliderValue = Button(rightBottomFrame, text="Submit", width=8, font=fontStyleInteractive2, command=ChangeSliderValue)
@@ -184,6 +192,14 @@ def ShowResultsInterface():
           font=fontStyleInteractive)
     zmienna.grid(row=2, column=5)
 
+    global zmienna2
+    zmienna2.destroy()
+    zmienna2 = Label(rightBottomFrame, text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"],
+        float(ShowResultsInterface.userInputPoint.get())),
+        font=fontStyleInteractive)
+    zmienna2.grid(row=3, column=1, columnspan=4)
+    
+
     # endregion
 
     # region show
@@ -196,10 +212,11 @@ def ShowResultsInterface():
 def ShowValuesOfSlider(self):
     ShowResultsInterface.userInputPoint.delete(0, END)
     ShowResultsInterface.userInputPoint.insert(END, ShowResultsInterface.slider.get())
-
-    Label(rightBottomFrame,
-          text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], float(ShowResultsInterface.userInputPoint.get())),
-          font=fontStyleInteractive).grid(row=3, column=1, columnspan=4)
+    
+    global zmienna2
+    zmienna2.destroy()
+    zmienna2 = Label(rightBottomFrame, text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], float(ShowResultsInterface.userInputPoint.get())), font=fontStyleInteractive)
+    zmienna2.grid(row=3, column=1, columnspan=4)
 
 
 def SubmitButton():
@@ -237,11 +254,4 @@ enter.grid(row=6, column=2, columnspan=5, padx=15)
 
 
 Label(rightTopFrame).grid()
-
-
-
-
-
-
-
 window.mainloop()
