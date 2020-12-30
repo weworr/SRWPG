@@ -43,6 +43,16 @@ def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     return {"x": x, "y": y}
 
 
+def range_calculation(initialVelocity, initialHeight, alpha, gravity):
+    A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
+    B = np.tan(alpha)
+    C = initialHeight
+
+    quadraticEquation = [A, B, C]
+    roots = np.roots(quadraticEquation)
+    return max(roots)
+
+
 def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
     if (alpha == np.pi / 2):    #plt.stem(x,y)
@@ -50,25 +60,14 @@ def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gra
         return {"x": 0, "y": height}
         
     elif (alpha == -1 * np.pi / 2): #plt.stem(x,y)
-        height = initialHeight
         return {"x": 0, "y": initialHeight}
     
     else:
-        A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
-        B = np.tan(alpha)
-        C = initialHeight
-
-        quadraticEquation = [A, B, C]
-        roots = np.roots(quadraticEquation)
-        range = max(roots)
-        height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
+        range = range_calculation(initialVelocity, initialHeight, alpha, gravity)
+        # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
         x = np.linspace(0, range, 1000)
         y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
-
- # `  plt.plot(x, y)
- #    plt.xlim(0, range + 0.1 * range)
- #    plt.show()
 
         return {"x": x, "y": y}
 

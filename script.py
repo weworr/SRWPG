@@ -8,95 +8,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
 
-XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
-window = Tk()
-window.title("Projectile motion")
-window.config(bg="#FFFFFF")
-
-rightFrame = Frame(window)
-rightFrame.pack(side="right", expand="false", fill="both")
-
-rightBottomFrame = Frame(rightFrame)
-rightBottomFrame.pack(side="bottom")
-
-rightTopFrame = Frame(rightFrame)
-rightTopFrame.pack(side="top")
-
-windowWidth = Frame(rightFrame, height=1, width=400)
-windowWidth.pack()
-
-
-fig = plt.Figure()  # deklaracja figury
-# tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
-graph = fig.add_subplot()
-graph.set_title("Some title")
-graph.plot(XY["x"], XY["y"])
-canvas = FigureCanvasTkAgg(fig, master=window)  # ustawianie
-canvas.draw()
-canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
-
-fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
-fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
-
-Label(rightTopFrame).grid(row=0)
-
-# region Velocity
-Label(rightTopFrame, text="Velocity: ", font=fontStyleLabel).grid(row=1, column=0)
-userInputVelocity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
-userInputVelocity.grid(row=1, column=1, columnspan=2)
-
-cbVelocityS_value = StringVar()
-cbVelocityS = ttk.Combobox(rightTopFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
-cbVelocityS["values"] = ("mm", "cm", "m", "km")
-cbVelocityS.current(2)
-cbVelocityS.grid(row=1, column=3)
-
-Label(rightTopFrame, text="/", font=fontStyleLabel).grid(row=1, column=4)
-
-cbVelocityT_value = StringVar()
-cbVelocityT = ttk.Combobox(rightTopFrame, textvariable=cbVelocityT_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
-cbVelocityT["values"] = ("ms", "s", "min", "h")
-cbVelocityT.current(1)
-cbVelocityT.grid(row=1, column=5)
-# endregion Velocity
-
-# region Height
-Label(rightTopFrame, text="Height: ", font=fontStyleLabel).grid(row=2, column=0)
-userInputHeight = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
-userInputHeight.grid(row=2, column=1, columnspan=2)
-
-cbHeight_value = StringVar()
-cbHeight = ttk.Combobox(rightTopFrame, textvariable=cbHeight_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
-cbHeight["values"] = ("mm", "cm", "m", "km")
-cbHeight.current(2)
-cbHeight.grid(row=2, column=3)
-# endregion
-
-
-# region Angle
-Label(rightTopFrame, text="Angle: ", font=fontStyleLabel, justify="center").grid(row=3, column=0)
-userInputAngle = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
-userInputAngle.grid(row=3, column=1, columnspan=2)
-
-cbAngle_value = StringVar()
-cbAngle = ttk.Combobox(rightTopFrame, textvariable=cbAngle_value, width=5, font=fontStyleInteractive, state="readonly", justify="center")
-cbAngle["values"] = ("°", "rad", "rad·π")
-cbAngle.current(0)
-cbAngle.grid(row=3, column=3, columnspan=2)
-# endregion
-
-# region Gravity
-Label(rightTopFrame, text="Gravity: ", font=fontStyleLabel).grid(row=4, column=0)
-userInputGravity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
-userInputGravity.insert(END, "9.80665")
-userInputGravity.grid(row=4, column=1, columnspan=2)
-Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
-# endregion
-
-
-userInputVelocity.insert(END, "9.80665")
-userInputHeight.insert(END, "9.80665")
-userInputAngle.insert(END, "9.80665")
+# List of parameters
+LOP = {}
 
 
 def GetListOfParameters():
@@ -139,50 +52,168 @@ def GetListOfParameters():
     return {"velocity": velocity, "height": height, "angle": angle, "gravity": gravity}
 
 
-ListOfParameters = {}
+XY = pmwr.projectileMotionWithoutResistance(2, np.pi / 4, 10, 2)  # Zwraca słownik X i Y
+window = Tk()
+window.title("Projectile motion")
+window.config(bg="#FFFFFF")
 
-def resetGraph():
-    graph.clear()
-    graph.set_title("Some title")
+#region Frames
+rightFrame = Frame(window)
+rightFrame.pack(side="right", expand="false", fill="both")
+
+rightBottomFrame = Frame(rightFrame)
+rightBottomFrame.pack(side="bottom")
+
+rightTopFrame = Frame(rightFrame)
+rightTopFrame.pack(side="top")
+
+windowWidth = Frame(rightFrame, height=1, width=400)
+windowWidth.pack()
+#endregion
+
+fig = plt.Figure()  # deklaracja figury
+# tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
+graph = fig.add_subplot()
+graph.set_title("Exemplary Graph")
+graph.plot(XY["x"], XY["y"])
+canvas = FigureCanvasTkAgg(fig, master=window)  # ustawianie
+canvas.draw()
+canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
+
+fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
+fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
+fontStyleInteractive2 = tkFont.Font(family="Lucida Grande", size=8)
+
+cbPoint_value = StringVar()  # Musi być poza funkcją
+
+Label(rightTopFrame).grid(row=0)
+
+# region Velocity
+Label(rightTopFrame, text="Velocity: ", font=fontStyleLabel).grid(row=1, column=0)
+userInputVelocity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputVelocity.grid(row=1, column=1, columnspan=2)
+
+cbVelocityS_value = StringVar()
+cbVelocityS = ttk.Combobox(rightTopFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
+cbVelocityS["values"] = ("mm", "cm", "m", "km")
+cbVelocityS.current(2)
+cbVelocityS.grid(row=1, column=3)
+
+Label(rightTopFrame, text="/", font=fontStyleLabel).grid(row=1, column=4)
+
+cbVelocityT_value = StringVar()
+cbVelocityT = ttk.Combobox(rightTopFrame, textvariable=cbVelocityT_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
+cbVelocityT["values"] = ("ms", "s", "min", "h")
+cbVelocityT.current(1)
+cbVelocityT.grid(row=1, column=5)
+# endregion Velocity
+
+# region Height
+Label(rightTopFrame, text="Height: ", font=fontStyleLabel).grid(row=2, column=0)
+userInputHeight = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputHeight.grid(row=2, column=1, columnspan=2)
+
+cbHeight_value = StringVar()
+cbHeight = ttk.Combobox(rightTopFrame, textvariable=cbHeight_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
+cbHeight["values"] = ("mm", "cm", "m", "km")
+cbHeight.current(2)
+cbHeight.grid(row=2, column=3)
+# endregion
+
+# region Angle
+Label(rightTopFrame, text="Angle: ", font=fontStyleLabel, justify="center").grid(row=3, column=0)
+userInputAngle = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputAngle.grid(row=3, column=1, columnspan=2)
+
+cbAngle_value = StringVar()
+cbAngle = ttk.Combobox(rightTopFrame, textvariable=cbAngle_value, width=5, font=fontStyleInteractive, state="readonly", justify="center")
+cbAngle["values"] = ("°", "rad", "rad·π")
+cbAngle.current(0)
+cbAngle.grid(row=3, column=3, columnspan=2)
+# endregion
+
+# region Gravity
+Label(rightTopFrame, text="Gravity: ", font=fontStyleLabel).grid(row=4, column=0)
+userInputGravity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
+userInputGravity.insert(END, "9.80665")
+userInputGravity.grid(row=4, column=1, columnspan=2)
+Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
+# endregion
+
+
+userInputVelocity.insert(END, "9.80665")
+userInputHeight.insert(END, "9.80665")
+userInputAngle.insert(END, "9.80665")
+
+
+def ChangeSliderValue():
+    ShowResultsInterface.slider.set(float(ShowResultsInterface.userInputPoint.get()))
 
 
 def ShowResultsInterface():
-    ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.0, to=10.0, orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4,
-                   resolution=0.01)
-    Label(rightBottomFrame, text="Velocity", font=fontStyleLabel).grid(row=1, column=0)
-    ShowResultsInterface.slider.grid(row=0, column=1)
-    return
+    Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabel).grid(row=0, column=0)
+
+    cbPoint = ttk.Combobox(rightBottomFrame, textvariable=cbPoint_value, width=3, font=fontStyleInteractive,
+                            state="readonly", justify="center")
+    cbPoint["values"] = ("x", "t")
+    cbPoint.current(0)
+    cbPoint.grid(row=0, column=1)
+
+    # region Slider
+    ShowResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
+    ShowResultsInterface.userInputPoint.grid(row=2, column=0, sticky="E", padx=3)
+
+    sliderValue = Button(rightBottomFrame, text="Submit", width=8, font=fontStyleInteractive2, command=ChangeSliderValue)
+    sliderValue.grid(row=2, column=1, sticky="W")
+
+    Label(rightBottomFrame, text="").grid(row=2, column=2)
+
+    Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=3)
+    ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.00,
+                                        to=pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
+                                        orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4, resolution=0.01)
+    ShowResultsInterface.slider.grid(row=1, column=4, rowspan=2)
+    Label(rightBottomFrame, text="%.2f" % pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
+          font=fontStyleInteractive).grid(row=2, column=5)
+    # endregion
+
+    # region show
+    Label(rightBottomFrame, text="Velocity", font=fontStyleLabel).grid(row=3, column=0)
+
+
+    # endregion
 
 
 def ShowValuesOfSlider(self):
-    ListOfParameters = GetListOfParameters()
-    Label(rightBottomFrame,
-          text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], ShowResultsInterface.slider.get()),
-          font=fontStyleInteractive).grid(row=1, column=1)
+    ShowResultsInterface.userInputPoint.delete(0, END)
+    ShowResultsInterface.userInputPoint.insert(END, ShowResultsInterface.slider.get())
 
+    Label(rightBottomFrame,
+          text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], float(ShowResultsInterface.userInputPoint.get())),
+          font=fontStyleInteractive).grid(row=3, column=1, columnspan=4)
 
 
 def SubmitButton():
-    ListOfParameters = GetListOfParameters()
-    if not ListOfParameters:
+    global LOP
+    LOP = GetListOfParameters()
+    if not LOP:
         return
 
-    XY = pmwr.projectileMotionWithoutResistance(ListOfParameters["velocity"], ListOfParameters["height"], ListOfParameters["angle"], ListOfParameters["gravity"])
-    if (ListOfParameters["angle"] == np.pi / 2):
-        resetGraph()
-        graph.vlines(x=0, ymin=ListOfParameters["height"], ymax=XY["y"], colors="#3383BB")       
+    XY = pmwr.projectileMotionWithoutResistance(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    if (LOP["angle"] == np.pi / 2):
+        graph.clear()
+        graph.vlines(x=0, ymin=LOP["height"], ymax=XY["y"], colors="#3383BB")
         fig.canvas.draw_idle()
-    
-    elif (ListOfParameters["angle"] == -1 * np.pi / 2):
-        resetGraph()
+
+    elif (LOP["angle"] == -1 * np.pi / 2):
+        graph.clear()
         graph.vlines(x=0, ymin=0, ymax=XY["y"], colors="#3383BB")
         fig.canvas.draw_idle()
     else:
-        resetGraph()
+        graph.clear()
         graph.plot(XY["x"], XY["y"])
         fig.canvas.draw_idle()
-    
-    Label(rightBottomFrame, text=pmwr.velocity(ListOfParameters["velocity"], ListOfParameters["angle"], ListOfParameters["gravity"], 1), font=fontStyleInteractive).grid(row=0, column=2)
+
     ShowResultsInterface()
 
 # region Buttons
@@ -199,5 +230,10 @@ enter.grid(row=6, column=2, columnspan=5, padx=15)
 Label(rightTopFrame).grid()
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
+
+
+
+
+
 
 window.mainloop()
