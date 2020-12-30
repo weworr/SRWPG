@@ -3,6 +3,7 @@ import tkinter.font as tkFont
 import tkinter.ttk as ttk
 import numpy as np
 from modules import pmwr
+from modules import pm
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
@@ -43,10 +44,10 @@ def GetListOfParameters():
     heightUnit = cbHeight.get()
     angleUnit = cbAngle.get()
 
-    velocity = conv.UnitConversionT(conv.UnitConversionS(velocity, velocitySUnit), velocityTUnit)
-    height = conv.UnitConversionS(height, heightUnit)
+    velocity = conv.unitConversionT(conv.unitConversionS(velocity, velocitySUnit), velocityTUnit)
+    height = conv.unitConversionS(height, heightUnit)
     try:
-        angle = conv.UnitConversionA(angle, angleUnit)
+        angle = conv.unitConversionA(angle, angleUnit)
         if -pi / 2 > angle or angle > pi / 2:
             raise ValueError
     except ValueError:
@@ -56,6 +57,7 @@ def GetListOfParameters():
 
 
 XY = pmwr.projectileMotionWithoutResistance(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
+pm.projectileMotionWithResistance(2, 10, np.pi / 4, 9.81)
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
@@ -182,21 +184,19 @@ def ShowResultsInterface():
 
     Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=3)
     ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.00,
-                                        to=pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
+                                        to=pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
                                         orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
     ShowResultsInterface.slider.grid(row=1, column=4, rowspan=2)
 
     global zmienna
     zmienna.destroy()
-    zmienna = Label(rightBottomFrame, text="%.2f" % pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
+    zmienna = Label(rightBottomFrame, text="%.2f" % pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
           font=fontStyleInteractive)
     zmienna.grid(row=2, column=5)
 
     global zmienna2
     zmienna2.destroy()
-    zmienna2 = Label(rightBottomFrame, text=pmwr.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"],
-        float(ShowResultsInterface.userInputPoint.get())),
-        font=fontStyleInteractive)
+    zmienna2 = Label(rightBottomFrame, text=LOP["velocity"], font=fontStyleInteractive)
     zmienna2.grid(row=3, column=1, columnspan=4)
     
 

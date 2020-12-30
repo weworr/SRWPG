@@ -1,24 +1,10 @@
 # projectile motion without restiance
 import matplotlib.pyplot as plt
 import numpy as np
-
-def cos(x):
-    if x % (np.pi / 2) == 0:
-        return 0
-    
-    else:
-        return np.cos(x)
-
-def sin(x):
-    if (x == 0):
-        return 0
-    
-    else:
-        return np.sin(x)
+from modules.conversion import sin,cos
 
 def maxHeight(A, B, C, x):
     return A * x ** 2 + B * x + C
-
 
 def acceleration(gravity):
     xAcceleration = 0
@@ -27,6 +13,14 @@ def acceleration(gravity):
     
     return acceleration
 
+def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
+    A = -1 * gravity / 2
+    B = initialVelocity * sin(alpha)
+    C = initialHeight
+    
+    quadraticEquation = [A, B, C]
+    roots = np.roots(quadraticEquation)
+    return max(roots)
 
 def velocity(initialVelocity, alpha, gravity, time):
     xVelocity = initialVelocity * np.cos(alpha)
@@ -43,7 +37,7 @@ def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     return {"x": x, "y": y}
 
 
-def range_calculation(initialVelocity, initialHeight, alpha, gravity):
+def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)
     C = initialHeight
@@ -55,15 +49,15 @@ def range_calculation(initialVelocity, initialHeight, alpha, gravity):
 
 def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
-    if (alpha == np.pi / 2):    #plt.stem(x,y)
+    if (alpha == np.pi / 2):
         height = initialHeight + (initialVelocity ** 2) / (2 * gravity)
         return {"x": 0, "y": height}
         
-    elif (alpha == -1 * np.pi / 2): #plt.stem(x,y)
+    elif (alpha == -1 * np.pi / 2):
         return {"x": 0, "y": initialHeight}
     
     else:
-        range = range_calculation(initialVelocity, initialHeight, alpha, gravity)
+        range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
         # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
         x = np.linspace(0, range, 1000)
