@@ -8,7 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
 
-# List of parameters
+# List of parameters global
 LOP = {}
 
 
@@ -84,9 +84,12 @@ fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
 fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
 fontStyleInteractive2 = tkFont.Font(family="Lucida Grande", size=8)
 
+# region Global Variables
 cbPoint_value = StringVar()  # Musi być poza funkcją
+zmienna = Label(rightBottomFrame)  # global
+# endregion
 
-Label(rightTopFrame).grid(row=0)
+Label(rightTopFrame).grid(row=0)  # Odstęp od góry okienka
 
 # region Velocity
 Label(rightTopFrame, text="Velocity: ", font=fontStyleLabel).grid(row=1, column=0)
@@ -140,6 +143,8 @@ userInputGravity.grid(row=4, column=1, columnspan=2)
 Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 # endregion
 
+horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
+horizontalLine.pack()
 
 userInputVelocity.insert(END, "9.80665")
 userInputHeight.insert(END, "9.80665")
@@ -158,7 +163,6 @@ def ShowResultsInterface():
     cbPoint["values"] = ("x", "t")
     cbPoint.current(0)
     cbPoint.grid(row=0, column=1)
-
     # region Slider
     ShowResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
     ShowResultsInterface.userInputPoint.grid(row=2, column=0, sticky="E", padx=3)
@@ -171,10 +175,15 @@ def ShowResultsInterface():
     Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=2, column=3)
     ShowResultsInterface.slider = Scale(rightBottomFrame, from_=0.00,
                                         to=pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
-                                        orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4, resolution=0.01)
+                                        orient=HORIZONTAL, command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
     ShowResultsInterface.slider.grid(row=1, column=4, rowspan=2)
-    Label(rightBottomFrame, text="%.2f" % pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
-          font=fontStyleInteractive).grid(row=2, column=5)
+
+    global zmienna
+    zmienna.destroy()
+    zmienna = Label(rightBottomFrame, text="%.2f" % pmwr.range_calculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"]),
+          font=fontStyleInteractive)
+    zmienna.grid(row=2, column=5)
+
     # endregion
 
     # region show
@@ -228,8 +237,7 @@ enter.grid(row=6, column=2, columnspan=5, padx=15)
 
 
 Label(rightTopFrame).grid()
-horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
-horizontalLine.pack()
+
 
 
 
