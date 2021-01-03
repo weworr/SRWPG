@@ -29,12 +29,14 @@ def unitConversionA(number, unit):
         number = number*np.pi
     return number
 
+
 def cos(x):
     if x % (np.pi / 2) == 0:
         return 0
     
     else:
         return np.cos(x)
+
 
 def sin(x):
     if (x == 0):
