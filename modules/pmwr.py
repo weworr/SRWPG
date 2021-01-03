@@ -1,19 +1,25 @@
 # projectile motion without restiance
 import matplotlib.pyplot as plt
 import numpy as np
-from modules.conversion import sin,cos
+from modules.conversion import sin, cos
 
-def maxHeight(A, B, C, x):
-    return A * x ** 2 + B * x + C
+def vertex(initialVelocity, initialHeight, alpha, gravity):
+    A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
+    B = np.tan(alpha)
+    C = initialHeight
+    quadraticEquation = [A, B, C]
+    roots = np.roots(quadraticEquation)
+    x = (roots[0] + roots[1])/2
+    return {"y": A * x ** 2 + B * x + C, "x": x, "t": xToTime(x, initialVelocity, alpha)}
 
 
 def velocity(initialVelocity, alpha, gravity, time):
-    if time == 0.0:
-        return initialVelocity
     xVelocity = initialVelocity * np.cos(alpha)
     yVelocity = initialVelocity * np.sin(alpha) - gravity * time
+    if time == 0.0:
+        return {"velocity": initialVelocity, "xvelocity": xVelocity, "yvelocity": yVelocity}
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
-    return velocity
+    return {"velocity": velocity, "xvelocity": xVelocity, "yvelocity": yVelocity}
 
 
 def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
@@ -26,12 +32,14 @@ def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
     return max(roots)
 
 
-def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
+def xPoint(initialVelocity, alpha, time):
     #alpha w radianach
-    x = initialVelocity * cos(alpha) * time
-    y = initialHeight * sin(alpha) * time - (gravity * time ** 2) / 2
+    return initialVelocity * cos(alpha) * time
 
-    return {"x": x, "y": y}
+
+def yPoint(initialVelocity, initialHeight, alpha, gravity, time):
+    #alpha w radianach
+    return initialHeight + initialVelocity * sin(alpha) * time - (gravity * time ** 2) / 2
 
 
 def xToTime(x, initialVelocity, alpha):
@@ -48,7 +56,7 @@ def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
     return max(roots)
 
 
-def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
+def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
     if (alpha == np.pi / 2):
         height = initialHeight + (initialVelocity ** 2) / (2 * gravity)
@@ -59,7 +67,6 @@ def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gra
     
     else:
         range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
-        # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
         x = np.linspace(0, range, 1000)
         y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
