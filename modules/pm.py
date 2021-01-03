@@ -14,14 +14,24 @@ def velocity(initialVelocity, alpha, gravity, time, resistance):
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
     return {"xVelocity": xVelocity, "yVelocity": yVelocity, "velocity": velocity}
 
+
+def xPoint(initialVelocity, alpha, time, resistance):
+    return (initialVelocity * cos(alpha) / resistance) * (1 - np.exp(-1 * resistance * time))
+
+
+def yPoint(v0y, initialHeight, alpha, gravity, time, resistance):
+    return initialHeight + (v0y / resistance) + gravity / (resistance ** 2) - gravity * time / resistance - ((resistance * v0y + gravity) / (resistance ** 2)) * np.exp(-1 * resistance * time)
+
+
 def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
     time = (np.log(resistance * initialVelocity * sin(alpha) / gravity) + 1) / resistance
     v0y = initialVelocity * sin(alpha)
 
-    x = (initialVelocity * cos(alpha) / resistance) * (1 - np.exp(-1 * resistance * time))
-    y = initialHeight + (v0y / resistance) + gravity / (resistance ** 2) - gravity * time / resistance - ((resistance * v0y + gravity) / (resistance ** 2)) * np.exp(-1 * resistance * time)
+    x = xPoint(initialVelocity, alpha, time, resistance)
+    y = yPoint(v0y, initialHeight, alpha, gravity, time, resistance)
     
     return {"x": x, "y": y, "t": time}
+
 
 def xToTime(x, initialVelocity, alpha, resistance):
     return - 1 * np.log(1 - resistance * x / (initialVelocity * cos(alpha))) / resistance        
@@ -40,5 +50,4 @@ def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity, resis
     v0y = initialVelocity * sin(alpha)
     y = initialHeight + (v0y / resistance) + gravity / (resistance ** 2) - gravity * time / resistance - ((resistance * v0y + gravity) / (resistance ** 2)) * np.exp(-1 * resistance * time)
 
-    return {"x": x, "y": y}
-    
+    return {"x": x, "y": y}  
