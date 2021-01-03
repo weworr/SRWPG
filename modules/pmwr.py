@@ -29,7 +29,7 @@ def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
 def cooridnates(initialVelocity, initialHeight, alpha, gravity, time):
     #alpha w radianach
     x = initialVelocity * cos(alpha) * time
-    y = initialHeight * sin(alpha) * time - (gravity * time ** 2) / 2
+    y = initialHeight + initialVelocity * sin(alpha) * time - (gravity * time ** 2) / 2
 
     return {"x": x, "y": y}
 
@@ -50,19 +50,18 @@ def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
 
 def projectileMotionWithoutResistance(initialVelocity, initialHeight, alpha, gravity):
     # kąty muszą być w radianach
-    if (alpha == np.pi / 2):
+    if alpha == np.pi / 2:
         height = initialHeight + (initialVelocity ** 2) / (2 * gravity)
         return {"x": 0, "y": height}
         
-    elif (alpha == -1 * np.pi / 2):
+    elif alpha == -1 * np.pi / 2:
         return {"x": 0, "y": initialHeight}
     
-    else:
-        range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
-        # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
+    range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
+    # height = maxHeight(A, B, C, (roots[0] + roots[1]) / 2)
 
-        x = np.linspace(0, range, 1000)
-        y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
+    x = np.linspace(0, range, 1000)
+    y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
 
-        return {"x": x, "y": y}
+    return {"x": x, "y": y}
 

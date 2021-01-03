@@ -42,6 +42,3 @@ def sin(x):
     
     else:
         return np.sin(x)
-
-def xToTime(x, initialVelocity, alpha):
-    return x / (initialVelocity * cos(alpha))

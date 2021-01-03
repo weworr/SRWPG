@@ -61,9 +61,7 @@ def GetListOfParameters():
         return False
     return {"velocity": velocity, "height": height, "angle": angle, "gravity": gravity}
 
-
 XY = pmwr.projectileMotionWithoutResistance(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
-pm.projectileMotionWithResistance(2, 10, np.pi / 4, 9.81, 1)
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
@@ -189,7 +187,7 @@ def ShowLabelWithValues(text, row, column, rowspan, columnspan, name):
 
 def ComboboxEvent(self):
     if StartUpResultsInterface.cbPoint.get() == 't':
-        ComboboxEvent.sliderRange = pmwr.endTime(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+        ComboboxEvent.sliderRange = pmwr.endTimeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
     else:
         ComboboxEvent.sliderRange = pmwr.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
     ComboboxEvent.slider = Scale(rightBottomFrame, from_=0.00, to=ComboboxEvent.sliderRange, orient=HORIZONTAL,
