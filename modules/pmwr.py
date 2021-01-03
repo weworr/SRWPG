@@ -16,7 +16,7 @@ def velocity(initialVelocity, alpha, gravity, time):
     return velocity
 
 
-def endTime(initialVelocity, initialHeight, alpha, gravity):
+def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
     A = -1 * gravity / 2
     B = initialVelocity * sin(alpha)
     C = initialHeight

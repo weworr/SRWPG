@@ -63,7 +63,7 @@ def GetListOfParameters():
 
 
 XY = pmwr.projectileMotionWithoutResistance(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
-pm.projectileMotionWithResistance(2, 10, np.pi / 4, 9.81)
+pm.projectileMotionWithResistance(2, 10, np.pi / 4, 9.81, 1)
 window = Tk()
 window.title("Projectile motion")
 window.config(bg="#FFFFFF")
