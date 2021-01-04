@@ -10,6 +10,7 @@ from modules import conversion as conv
 
 # kolumny 0 (cokolwiek to znaczy)
 
+
 def GetListOfParameters():
     from numpy import pi
 
@@ -97,7 +98,7 @@ windowWidth.pack()
 # endregion
 
 # region Graph
-XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
+XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81, 0)  # Zwraca słownik X i Y
 fig = plt.Figure()  # deklaracja figury
 # tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
 graph = fig.add_subplot()
@@ -258,7 +259,7 @@ def ResultsInterface():
     # endregion
 
     # region Results Interface Vertex
-    vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], 0)
 
     Label(rightBottomFrame, text="Vertex values:", font=fontStyleLabelMedium).grid(row=0, column=0)
     # Vertex X
@@ -316,7 +317,7 @@ def SubmitButton():
 
     save["state"] = 'active'
 
-    XY = mode.calculateFunctionGraph(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    XY = mode.calculateFunctionGraph(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
     if (LOP["angle"] == np.pi / 2):
         graph.clear()
         graph.vlines(x=0, ymin=0, ymax=XY["y"], colors="#3383BB")

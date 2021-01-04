@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from modules.conversion import sin, cos
 
-def vertex(initialVelocity, initialHeight, alpha, gravity):
+
+def vertex(initialVelocity, initialHeight, alpha, gravity, r):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)
     C = initialHeight
@@ -13,7 +14,7 @@ def vertex(initialVelocity, initialHeight, alpha, gravity):
     return {"y": A * x ** 2 + B * x + C, "x": x, "t": xToTime(x, initialVelocity, alpha)}
 
 
-def velocity(initialVelocity, alpha, gravity, time):
+def velocity(initialVelocity, alpha, gravity, time, r):
     xVelocity = initialVelocity * np.cos(alpha)
     yVelocity = initialVelocity * np.sin(alpha) - gravity * time
     if time == 0.0:
@@ -22,7 +23,7 @@ def velocity(initialVelocity, alpha, gravity, time):
     return {"velocity": velocity, "xvelocity": xVelocity, "yvelocity": yVelocity}
 
 
-def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
+def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity, r):
     A = -1 * gravity / 2
     B = initialVelocity * sin(alpha)
     C = initialHeight
@@ -32,21 +33,21 @@ def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
     return max(roots)
 
 
-def xPoint(initialVelocity, alpha, time):
+def xPoint(initialVelocity, alpha, time, r):
     #alpha w radianach
     return initialVelocity * cos(alpha) * time
 
 
-def yPoint(initialVelocity, initialHeight, alpha, gravity, time):
+def yPoint(initialVelocity, initialHeight, alpha, gravity, time, r):
     #alpha w radianach
     return initialHeight + initialVelocity * sin(alpha) * time - (gravity * time ** 2) / 2
 
 
-def xToTime(x, initialVelocity, alpha):
+def xToTime(x, initialVelocity, alpha, r):
     return x / (initialVelocity * cos(alpha))
 
 
-def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
+def rangeCalculation(initialVelocity, initialHeight, alpha, gravity, r):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)
     B = np.tan(alpha)
     C = initialHeight
@@ -56,7 +57,7 @@ def rangeCalculation(initialVelocity, initialHeight, alpha, gravity):
     return max(roots)
 
 
-def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity):
+def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity, r):
     # kąty muszą być w radianach
     if alpha == np.pi / 2:
         height = initialHeight + (initialVelocity ** 2) / (2 * gravity)
@@ -66,7 +67,7 @@ def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity):
         return {"x": 0, "y": initialHeight}
     
     else:
-        range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity)
+        range = rangeCalculation(initialVelocity, initialHeight, alpha, gravity, 0)
 
     x = np.linspace(0, range, 1000)
     y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
