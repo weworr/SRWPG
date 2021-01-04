@@ -4,11 +4,12 @@ import tkinter.ttk as ttk
 import numpy as np
 from modules import pmwr as mode
 import matplotlib.pyplot as plt
+from tkinter.filedialog import askdirectory
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
+import os
 
-# kolumny 0 (cokolwiek to znaczy)
 
 def GetListOfParameters():
     from numpy import pi
@@ -97,7 +98,7 @@ windowWidth.pack()
 # endregion
 
 # region Graph
-XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81)  # Zwraca słownik X i Y
+XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81, 0)  # Zwraca słownik X i Y
 fig = plt.Figure()  # deklaracja figury
 # tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
 graph = fig.add_subplot()
@@ -115,10 +116,10 @@ LOE = [] # list of entries (needed to loadfromfile)
 # endregion
 
 # region Font Styles
-fontStyleLabel = tkFont.Font(family="Lucida Grande", size=15)
+fontStyleLabel = tkFont.Font(family="Lucida Grande", size=12, weight='bold')
 fontStyleLabelMedium = tkFont.Font(family="Lucida Grande", size=11, weight='bold')
 
-fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=12)
+fontStyleInteractive = tkFont.Font(family="Lucida Grande", size=10)
 fontStyleInteractiveMedium = tkFont.Font(family="Lucida Grande", size=10)
 fontStyleInteractiveSmall = tkFont.Font(family="Lucida Grande", size=8)
 # endregion
@@ -224,13 +225,13 @@ def ComboboxEvent(self):
     if ResultsInterface.cbPoint.get() == 't':
         ComboboxEvent.sliderRange = mode.endTimeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
     else:
-        ComboboxEvent.sliderRange = mode.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+        ComboboxEvent.sliderRange = mode.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
 
     ComboboxEvent.slider = Scale(rightBottomFrame, from_=0.00, to=ComboboxEvent.sliderRange, orient=HORIZONTAL,
-                                        command=ShowValuesOfSlider, digits=4, resolution=0.00000001)
+                                 width=13, length=150, command=ShowValuesOfSlider, digits=8, resolution=0.0000000000001)
 
-    ComboboxEvent.slider.grid(row=4, column=1, rowspan=2)
-    ShowLabel("%.2f" % ComboboxEvent.sliderRange, "right.rightbottom.range", 5, 2, 1, 1)
+    ComboboxEvent.slider.grid(row=6, column=1, rowspan=2, columnspan=2)
+    ShowLabel("%.2f" % ComboboxEvent.sliderRange, "right.rightbottom.range", 7, 3, 1, 1)
 
 
 def ShowValuesOfSlider(self):
@@ -239,87 +240,92 @@ def ShowValuesOfSlider(self):
     if ResultsInterface.cbPoint.get() == 't':
         time = float(ResultsInterface.userInputPoint.get())
     else:
-        time = mode.xToTime(float(ResultsInterface.userInputPoint.get()), LOP["velocity"], LOP["angle"])
+        time = mode.xToTime(float(ResultsInterface.userInputPoint.get()), LOP["velocity"], LOP["angle"], LOP["resistance"])
 
-    velocity = mode.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], time)
+    velocity = mode.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], time, LOP["resistance"])
     # Point Velocity
-    ShowLabel(velocity["velocity"], "right.rightbottom.velocity", 6, 1, 1, 4)
+    ShowLabel(velocity["velocity"], "right.rightbottom.velocity", 9, 2, 1, 4)
     # Point X Velocity
-    ShowLabel(velocity["xvelocity"], "right.rightbottom.xvelocity", 7, 1, 1, 4)
+    ShowLabel(velocity["xvelocity"], "right.rightbottom.xvelocity", 10, 2, 1, 4)
     # Point Y Velocity
-    ShowLabel(velocity["yvelocity"], "right.rightbottom.yvelocity", 8, 1, 1, 4)
+    ShowLabel(velocity["yvelocity"], "right.rightbottom.yvelocity", 11, 2, 1, 4)
     # Point Height
-    ShowLabel(mode.yPoint(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], time), "right.rightbottom.height", 9, 1, 1, 4)
+    ShowLabel(mode.yPoint(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], time, LOP["resistance"]), "right.rightbottom.height", 12, 2, 1, 4)
     # Point Time
-    ShowLabel(time, 'right.rightbottom.time', 10, 1, 1, 4)
+    ShowLabel(time, 'right.rightbottom.time', 13, 2, 1, 4)
     # Point X
-    ShowLabel(mode.xPoint(LOP["velocity"], LOP["angle"], time), "right.rightbottom.x", 11, 1, 1, 4)
+    ShowLabel(mode.xPoint(LOP["velocity"], LOP["angle"], time, LOP["resistance"]), "right.rightbottom.x", 14, 2, 1, 4)
+
 
 def ResultsInterface():
-
     # region Results Interface Combobox
-    Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabelMedium).grid(row=3, column=0)
+    Label(rightBottomFrame).grid(row=4)
+    Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabelMedium).grid(row=5, column=0, columnspan=2)
 
     ResultsInterface.cbPoint = ttk.Combobox(rightBottomFrame, textvariable=cbPoint_value, width=3, font=fontStyleInteractiveSmall,
                            state="readonly", justify="center")
     ResultsInterface.cbPoint["values"] = ("x", "t")
     ResultsInterface.cbPoint.current(0)
     ResultsInterface.cbPoint.bind("<<ComboboxSelected>>", ComboboxEvent)
-    ResultsInterface.cbPoint.grid(row=3, column=1)
+    ResultsInterface.cbPoint.grid(row=5, column=2, sticky='w')
     ComboboxEvent(ComboboxEvent)
-    Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=5, column=0, sticky='e')
+    Label(rightBottomFrame, text="0", font=fontStyleInteractive).grid(row=7, column=0, sticky='e')
     # endregion
 
-    # region Results Interface Vertex
-    vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    restart = Button(rightBottomFrame, text="Restart", width=5, font=fontStyleInteractiveMedium, command=RestartButton)
+    restart.grid(row=0, column=3, sticky='w')
 
-    Label(rightBottomFrame, text="Vertex values:", font=fontStyleLabelMedium).grid(row=0, column=0)
+    # region Results Interface Vertex
+    vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
+
+    Label(rightBottomFrame, text="Vertex values:", font=fontStyleLabelMedium).grid(row=0, column=0, columnspan=2)
     # Vertex X
-    Label(rightBottomFrame, text="X:", font=fontStyleLabelMedium).grid(row=1, column=0)
-    ShowLabel(vertex['x'], "right.rightbottom.vertexx", 1, 1, 1, 1)
+    Label(rightBottomFrame, text="X:", font=fontStyleLabelMedium).grid(row=1, column=0, columnspan=2)
+    ShowLabel(vertex['x'], "right.rightbottom.vertexx", 1, 2, 1, 1)
     # Vertex Y
-    Label(rightBottomFrame, text="Y:", font=fontStyleLabelMedium).grid(row=1, column=2)
-    ShowLabel(vertex['y'], "right.rightbottom.vertexy", 1, 3, 1, 2)
+    Label(rightBottomFrame, text="Y:", font=fontStyleLabelMedium).grid(row=2, column=0, columnspan=2)
+    ShowLabel(vertex['y'], "right.rightbottom.vertexy", 2, 2, 1, 2)
     # Vertex T
-    Label(rightBottomFrame, text="Time :", font=fontStyleLabelMedium).grid(row=2, column=0)
-    ShowLabel(vertex['t'], "right.rightbottom.vertext", 2, 1, 1, 1)
+    Label(rightBottomFrame, text="Time :", font=fontStyleLabelMedium).grid(row=3, column=0, columnspan=2)
+    ShowLabel(vertex['t'], "right.rightbottom.vertext", 3, 2, 1, 1)
     # endregion
 
     # region Interactive Results Interface
-    ResultsInterface.userInputPoint = Entry(rightBottomFrame, width=8, font=fontStyleInteractive, justify="center")
+    ResultsInterface.userInputPoint = Entry(rightBottomFrame, width=15, font=fontStyleInteractive, justify="center")
     ResultsInterface.userInputPoint.insert(END, "0.0")
-    ResultsInterface.userInputPoint.grid(row=5, column=3, sticky="w", padx=3)
+    ResultsInterface.userInputPoint.grid(row=8, column=1, columnspan=2)
 
     sliderValue = Button(rightBottomFrame, text="Submit", width=8, font=fontStyleInteractiveSmall,
                          command=ChangeSliderValue)
-    sliderValue.grid(row=5, column=4, sticky='w')
+    sliderValue.grid(row=8, column=3, sticky='w')
 
     # region Initial Values
     # Initial Velocity
-    Label(rightBottomFrame, text="Velocity:", font=fontStyleLabelMedium).grid(row=6, column=0)
-    ShowLabel(LOP["velocity"], "right.rightbottom.velocity", 6, 1, 1, 4)
+    Label(rightBottomFrame, text="Velocity:", font=fontStyleLabelMedium).grid(row=9, column=0, columnspan=2)
+    ShowLabel(LOP["velocity"], "right.rightbottom.velocity", 9, 2, 1, 4)
 
     # Initial X Velocity
-    Label(rightBottomFrame, text="Velocity X:", font=fontStyleLabelMedium).grid(row=7, column=0)
-    ShowLabel(LOP["velocity"]*conv.cos(LOP["angle"]), "right.rightbottom.xvelocity", 7, 1, 1, 4)
+    Label(rightBottomFrame, text="Velocity X:", font=fontStyleLabelMedium).grid(row=10, column=0, columnspan=2)
+    ShowLabel(LOP["velocity"]*conv.cos(LOP["angle"]), "right.rightbottom.xvelocity", 10, 2, 1, 4)
 
     # Initial Y Velocity
-    Label(rightBottomFrame, text="Velocity Y:", font=fontStyleLabelMedium).grid(row=8, column=0)
-    ShowLabel(LOP["velocity"]*conv.sin(LOP["angle"]), "right.rightbottom.yvelocity", 8, 1, 1, 4)
+    Label(rightBottomFrame, text="Velocity Y:", font=fontStyleLabelMedium).grid(row=11, column=0, columnspan=2)
+    ShowLabel(LOP["velocity"]*conv.sin(LOP["angle"]), "right.rightbottom.yvelocity", 11, 2, 1, 4)
 
     # Initial Height
-    Label(rightBottomFrame, text="Height:", font=fontStyleLabelMedium).grid(row=9, column=0)
-    ShowLabel(LOP["height"], "right.rightbottom.height", 9, 1, 1, 4)
+    Label(rightBottomFrame, text="Height:", font=fontStyleLabelMedium).grid(row=12, column=0, columnspan=2)
+    ShowLabel(LOP["height"], "right.rightbottom.height", 12, 2, 1, 4)
 
     # Initial Time
-    Label(rightBottomFrame, text="Time:", font=fontStyleLabelMedium).grid(row=10, column=0)
-    ShowLabel("0.00", "right.rightbottom.time", 10, 1, 1, 4)
+    Label(rightBottomFrame, text="Time:", font=fontStyleLabelMedium).grid(row=13, column=0, columnspan=2)
+    ShowLabel("0.00", "right.rightbottom.time", 13, 2, 1, 4)
 
     # Initial X
-    Label(rightBottomFrame, text="X:", font=fontStyleLabelMedium).grid(row=11, column=0)
-    ShowLabel("0.00", "right.rightbottom.x", 11, 1, 1, 4)
+    Label(rightBottomFrame, text="X:", font=fontStyleLabelMedium).grid(row=14, column=0, columnspan=2)
+    ShowLabel("0.00", "right.rightbottom.x", 14, 2, 1, 4)
     # endregion
     # endregion
+
 
 def SubmitButton():
     global LOP
@@ -327,9 +333,10 @@ def SubmitButton():
     if not LOP:
         return
 
-    save["state"] = 'active'
+    saveOrLoad = Button(rightTopFrame, text="Save to File", width=15, font=fontStyleInteractive, command=SaveButton)
+    saveOrLoad.grid(row=6, column=0, columnspan=2, padx=15)
 
-    XY = mode.calculateFunctionGraph(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
+    XY = mode.calculateFunctionGraph(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
     if (LOP["angle"] == np.pi / 2):
         graph.clear()
         graph.vlines(x=0, ymin=0, ymax=XY["y"], colors="#3383BB")
@@ -348,18 +355,48 @@ def SubmitButton():
     ResultsInterface()
 
 
-def SaveButton():
-    # Czas trwania, zasieg <- plik
+def LoadButton():
     return
 
 
+def SaveButton():
+    savedir = askdirectory(title='Select folder to save results')
+    try:
+        os.mkdir(savedir + "/PMS")
+    except FileExistsError:
+        pass
+
+    from glob import glob
+    i = 1
+    fileName = "GraphData"
+    while 1:
+        try:
+            glob(savedir + "/PMS" + "/" + fileName + ".txt")[0]
+        except IndexError:
+            file = open(savedir + "/PMS" + "/" + fileName + ".txt", "w")
+            fig.savefig(savedir + "/PMS/"+fileName+".png", dpi=72)
+            file.write("xdddd")
+            break
+        fileName = fileName.split('(')
+        fileName = fileName[0] + "(" + str(i) + ")"
+        i += 1
+
+
+
+def RestartButton():
+    import sys
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+
 # region Buttons
-save = Button(rightTopFrame, text="Save to File", width=15, font=fontStyleInteractive, state='disabled')
-save.grid(row=6, column=0, columnspan=2, padx=15)
+saveOrLoad = Button(rightTopFrame, text="Load from File", width=15, font=fontStyleInteractive, command=LoadButton)
+saveOrLoad.grid(row=6, column=0, columnspan=2, padx=15)
 
 enter = Button(rightTopFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
 enter.grid(row=6, column=2, columnspan=5, padx=15)
 # endregion
+
 
 Label(rightTopFrame).grid()
 window.mainloop()
