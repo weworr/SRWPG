@@ -111,6 +111,7 @@ canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 # region Global Variables
 LOP = {}  # List of parameters global
 cbPoint_value = StringVar()  # Musi być poza funkcją
+LOE = [] # list of entries (needed to loadfromfile) 
 # endregion
 
 # region Font Styles
@@ -129,6 +130,7 @@ Label(rightTopFrame).grid(row=0)  # Odstęp od góry okienka
 Label(rightTopFrame, text="Velocity: ", font=fontStyleLabel).grid(row=1, column=0)
 userInputVelocity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
 userInputVelocity.grid(row=1, column=1, columnspan=2)
+LOE.append(userInputVelocity)
 
 cbVelocityS_value = StringVar()
 cbVelocityS = ttk.Combobox(rightTopFrame, textvariable=cbVelocityS_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
@@ -149,6 +151,7 @@ cbVelocityT.grid(row=1, column=5)
 Label(rightTopFrame, text="Height: ", font=fontStyleLabel).grid(row=2, column=0)
 userInputHeight = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
 userInputHeight.grid(row=2, column=1, columnspan=2)
+LOE.append(userInputHeight)
 
 cbHeight_value = StringVar()
 cbHeight = ttk.Combobox(rightTopFrame, textvariable=cbHeight_value, width=3, font=fontStyleInteractive, state="readonly", justify="center")
@@ -161,6 +164,7 @@ cbHeight.grid(row=2, column=3)
 Label(rightTopFrame, text="Angle: ", font=fontStyleLabel, justify="center").grid(row=3, column=0)
 userInputAngle = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
 userInputAngle.grid(row=3, column=1, columnspan=2)
+LOE.append(userInputAngle)
 
 cbAngle_value = StringVar()
 cbAngle = ttk.Combobox(rightTopFrame, textvariable=cbAngle_value, width=5, font=fontStyleInteractive, state="readonly", justify="center")
@@ -173,6 +177,8 @@ cbAngle.grid(row=3, column=3, columnspan=2)
 Label(rightTopFrame, text="Gravity: ", font=fontStyleLabel).grid(row=4, column=0)
 userInputGravity = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
 userInputGravity.grid(row=4, column=1, columnspan=2)
+LOE.append(userInputGravity)
+
 Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 # endregion
 
@@ -180,6 +186,7 @@ Label(rightTopFrame, text="m/s", font=fontStyleLabel).grid(row=4, column=3)
 Label(rightTopFrame, text="Resistance: ", font=fontStyleLabel).grid(row=5, column=0)
 userInputResistance = Entry(rightTopFrame, width=18, font=fontStyleInteractive, justify="center")
 userInputResistance.grid(row=5, column=1, columnspan=2)
+LOE.append(userInputResistance)
 # endregion
 # endregion
 
@@ -193,6 +200,12 @@ userInputResistance.insert(END, "0")
 
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
+
+def LoadFromFile(path):
+    with open(path, "r") as file:
+        for entry in LOE:
+            pass
+        
 
 def ChangeSliderValue():
     ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))

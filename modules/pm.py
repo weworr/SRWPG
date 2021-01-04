@@ -34,7 +34,12 @@ def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
 
 
 def xToTime(x, initialVelocity, alpha, resistance):
-    return - 1 * np.log(1 - resistance * x / (initialVelocity * cos(alpha))) / resistance        
+    return - 1 * np.log(1 - resistance * x / (initialVelocity * cos(alpha))) / resistance
+
+
+def rangeCalculation(initialVelocity, initialHeight, alpha, gravity, resistance):
+    time = endTimeCalculation(initialVelocity, initialHeight, alpha, gravity)
+    return xPoint(initialVelocity, alpha, time, resistance)
 
 
 def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity, resistance):
