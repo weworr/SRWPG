@@ -384,6 +384,10 @@ def SubmitButton():
 
 
 def LoadButton():
+    """
+    Load button on click function,
+    loads params from a file.
+    """
     path = askopenfilename(initialdir="/", title="Select file", filetypes=[("Text files", "*.txt")])
 
     with open(path, "r") as file:
@@ -401,8 +405,7 @@ def LoadButton():
                 cbHeight.current(cbHeight["values"].index(values[2]))
             elif lineNum == 2:
                 cbAngle.current(cbAngle["values"].index(values[2]))
-
-                
+    SubmitButton()
 
 
 def SaveButton():
