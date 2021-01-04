@@ -10,7 +10,15 @@ from tkinter import messagebox as mbox
 from modules import conversion as conv
 import os
 
+
 def GetListOfParameters():
+    """
+    Gets values from entries, checks if correct values were entered,
+    and converts them if it is needed.
+    Also generates dictionary from those values.
+
+    :return: False - if user input isn't correct, True - otherwise.
+    """
     from numpy import pi
 
     try:
@@ -97,21 +105,20 @@ windowWidth.pack()
 # endregion
 
 # region Graph
-XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81, 0)  # Zwraca słownik X i Y
-fig = plt.Figure()  # deklaracja figury
-# tworzenie podziału na wiersze i kolumny, w krotce wybór miejsca
+XY = mode.calculateFunctionGraph(2, 10, np.pi / 4, 9.81, 0)
+fig = plt.Figure()
 graph = fig.add_subplot()
 graph.set_title("Exemplary Graph")
 graph.plot(XY["x"], XY["y"])
-canvas = FigureCanvasTkAgg(fig, master=window)  # ustawianie
+canvas = FigureCanvasTkAgg(fig, master=window)
 canvas.draw()
 canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 # endregion
 
 # region Global Variables
-LOP = {}  # List of parameters global
-cbPoint_value = StringVar()  # Musi być poza funkcją
-LOE = [] # list of entries (needed to loadfromfile) 
+LOP = {}  # Fullname: List of parameters, global dictionary
+cbPoint_value = StringVar()  # Must be outside of function
+LOE = []  # list of entries (needed to loadfromfile)
 # endregion
 
 # region Font Styles
@@ -123,7 +130,7 @@ fontStyleInteractiveMedium = tkFont.Font(family="Lucida Grande", size=10)
 fontStyleInteractiveSmall = tkFont.Font(family="Lucida Grande", size=8)
 # endregion
 
-Label(rightTopFrame).grid(row=0)  # Odstęp od góry okienka
+Label(rightTopFrame).grid(row=0)
 
 # region Interface
 # region Velocity
@@ -201,17 +208,19 @@ userInputResistance.insert(END, "0")
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
 
-def LoadFromFile(path):
-    with open(path, "r") as file:
-        for entry in LOE:
-            pass
-        
-
-def ChangeSliderValue():
-    ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
-
 
 def ShowLabel(text, name, row, column, rowspan, columnspan):
+    """
+    Generates label from params and grid it by given params.
+
+    :param text: Label content
+    :param name: Label name
+    :param row: Grid row
+    :param column: Grid column
+    :param rowspan: Grid rowspan
+    :param columnspan: Grid columnspan
+    :return: Grids label with given parameters, on given position.
+    """
     try:
         window.nametowidget(name).destroy()
     except KeyError:
@@ -220,7 +229,17 @@ def ShowLabel(text, name, row, column, rowspan, columnspan):
         grid(row=row, column=column, rowspan=rowspan, columnspan=columnspan, sticky='w')
 
 
+def ChangeSliderValue():
+    """
+    Changes slider position if entry was submitted
+    """
+    ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
+
+
 def ComboboxEvent(self):
+    """
+    Generates slider of X or time.
+    """
     if ResultsInterface.cbPoint.get() == 't':
         ComboboxEvent.sliderRange = mode.endTimeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"])
     else:
@@ -234,6 +253,10 @@ def ComboboxEvent(self):
 
 
 def ShowValuesOfSlider(self):
+    """
+    Shows point values of params: (V, Vx, Vy, H, t, X)
+    Using slider real time value
+    """
     ResultsInterface.userInputPoint.delete(0, END)
     ResultsInterface.userInputPoint.insert(END, ComboboxEvent.slider.get())
     if ResultsInterface.cbPoint.get() == 't':
@@ -257,6 +280,9 @@ def ShowValuesOfSlider(self):
 
 
 def ResultsInterface():
+    """
+    Function showing combobox and constant labels
+    """
     # region Results Interface Combobox
     Label(rightBottomFrame).grid(row=4)
     Label(rightBottomFrame, text="Pick point by:", font=fontStyleLabelMedium).grid(row=5, column=0, columnspan=2)
@@ -327,6 +353,9 @@ def ResultsInterface():
 
 
 def SubmitButton():
+    """
+    Submit button on click function
+    """
     global LOP
     LOP = GetListOfParameters()
     if not LOP:
@@ -354,11 +383,21 @@ def SubmitButton():
     ResultsInterface()
 
 
-def LoadButton():
-    return
+def LoadButton(path):
+    """
+    Load button on click function,
+    loads params from file.
+    """
+    with open(path, "r") as file:
+        for entry in LOE:
+            pass
 
 
 def SaveButton():
+    """
+    Save button on click function,
+    saves user inputs to a file and graph image.
+    """
     savedir = askdirectory(title='Select folder to save results')
     try:
         os.mkdir(savedir + "/PMS")
@@ -383,14 +422,16 @@ def SaveButton():
                        "\nx = "+str(ResultsInterface.vertex['x']) +
                        "\ny = "+str(ResultsInterface.vertex['y']) +
                        "\ntime = "+str(ResultsInterface.vertex['t']))
-
             break
-        fileName = fileName.split('(')
-        fileName = fileName[0] + "(" + str(i) + ")"
+        fileName = fileName.split('(')[0] + "(" + str(i) + ")"
         i += 1
 
 
 def RestartButton():
+    """
+    Restart button on click function,
+    Restarts program.
+    """
     import sys
     python = sys.executable
     os.execl(python, python, * sys.argv)
@@ -403,7 +444,6 @@ saveOrLoad.grid(row=6, column=0, columnspan=2, padx=15)
 enter = Button(rightTopFrame, text="Submit", width=15, font=fontStyleInteractive, command=SubmitButton)
 enter.grid(row=6, column=2, columnspan=5, padx=15)
 # endregion
-
 
 Label(rightTopFrame).grid()
 window.mainloop()

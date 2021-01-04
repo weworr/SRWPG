@@ -4,15 +4,16 @@ import numpy as np
 from modules.conversion import sin, cos
 from modules.pmwr import endTimeCalculation
 
+
 def velocity(initialVelocity, alpha, gravity, time, resistance):
     xVelocity = initialVelocity * np.exp(-1 * resistance * time) * cos(alpha)
     yVelocity = (initialVelocity * sin(alpha) + gravity / resistance) * np.exp(-1 * resistance * time) - gravity / resistance
 
     if time == 0.0:
-        return {"xVelocity": xVelocity, "yVelocity": yVelocity, "velocity": initialVelocity}
+        return {"xvelocity": xVelocity, "yvelocity": yVelocity, "velocity": initialVelocity}
 
     velocity = np.sqrt(xVelocity ** 2 + yVelocity ** 2)
-    return {"xVelocity": xVelocity, "yVelocity": yVelocity, "velocity": velocity}
+    return {"xvelocity": xVelocity, "yvelocity": yVelocity, "velocity": velocity}
 
 
 def xPoint(initialVelocity, alpha, time, resistance):
