@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from modules.conversion import sin, cos
-
+# XD
 
 def vertex(initialVelocity, initialHeight, alpha, gravity, r):
     A = -1 * gravity / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2)

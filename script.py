@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import * # XD
 import tkinter.font as tkFont
 import tkinter.ttk as ttk
 import numpy as np
