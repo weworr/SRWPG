@@ -264,18 +264,18 @@ def ResultsInterface():
     restart.grid(row=0, column=3, sticky='w')
 
     # region Results Interface Vertex
-    vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
+    ResultsInterface.vertex = mode.vertex(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"], LOP["resistance"])
 
     Label(rightBottomFrame, text="Vertex values:", font=fontStyleLabelMedium).grid(row=0, column=0, columnspan=2)
     # Vertex X
     Label(rightBottomFrame, text="X:", font=fontStyleLabelMedium).grid(row=1, column=0, columnspan=2)
-    ShowLabel(vertex['x'], "right.rightbottom.vertexx", 1, 2, 1, 1)
+    ShowLabel(ResultsInterface.vertex['x'], "right.rightbottom.vertexx", 1, 2, 1, 1)
     # Vertex Y
     Label(rightBottomFrame, text="Y:", font=fontStyleLabelMedium).grid(row=2, column=0, columnspan=2)
-    ShowLabel(vertex['y'], "right.rightbottom.vertexy", 2, 2, 1, 2)
+    ShowLabel(ResultsInterface.vertex['y'], "right.rightbottom.vertexy", 2, 2, 1, 2)
     # Vertex T
     Label(rightBottomFrame, text="Time :", font=fontStyleLabelMedium).grid(row=3, column=0, columnspan=2)
-    ShowLabel(vertex['t'], "right.rightbottom.vertext", 3, 2, 1, 1)
+    ShowLabel(ResultsInterface.vertex['t'], "right.rightbottom.vertext", 3, 2, 1, 1)
     # endregion
 
     # region Interactive Results Interface
@@ -363,7 +363,16 @@ def SaveButton():
         except IndexError:
             file = open(savedir + "/PMS" + "/" + fileName + ".txt", "w")
             fig.savefig(savedir + "/PMS/"+fileName+".png", dpi=72)
-            file.write("xdddd")
+            file.write("Velocity: "+userInputVelocity.get()+" "+cbVelocityS.get()+" "+cbVelocityT.get() +
+                       "\nHeight: "+userInputHeight.get()+" "+cbHeight.get() +
+                       "\nAngle: "+userInputAngle.get()+" "+cbAngle.get() +
+                       "\nGravity: "+userInputGravity.get() +
+                       "\nResistance: "+userInputResistance.get() +
+                       "\n\nVertex: " +
+                       "\nx = "+str(ResultsInterface.vertex['x']) +
+                       "\ny = "+str(ResultsInterface.vertex['y']) +
+                       "\ntime = "+str(ResultsInterface.vertex['t']))
+
             break
         fileName = fileName.split('(')
         fileName = fileName[0] + "(" + str(i) + ")"
