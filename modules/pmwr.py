@@ -23,7 +23,7 @@ def velocity(initialVelocity, alpha, gravity, time, r):
     return {"velocity": velocity, "xvelocity": xVelocity, "yvelocity": yVelocity}
 
 
-def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity, r):
+def endTimeCalculation(initialVelocity, initialHeight, alpha, gravity):
     A = -1 * gravity / 2
     B = initialVelocity * sin(alpha)
     C = initialHeight
@@ -43,7 +43,7 @@ def yPoint(initialVelocity, initialHeight, alpha, gravity, time, r):
     return initialHeight + initialVelocity * sin(alpha) * time - (gravity * time ** 2) / 2
 
 
-def xToTime(x, initialVelocity, alpha, r):
+def xToTime(x, initialVelocity, alpha, r=0):
     return x / (initialVelocity * cos(alpha))
 
 
