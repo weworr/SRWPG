@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 import numpy as np
 from modules import pmwr as mode
 import matplotlib.pyplot as plt
-from tkinter.filedialog import askdirectory
+from tkinter.filedialog import askdirectory,askopenfilename
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
@@ -111,7 +111,8 @@ canvas.get_tk_widget().pack(side="left", fill="both", expand="true")
 # region Global Variables
 LOP = {}  # List of parameters global
 cbPoint_value = StringVar()  # Musi być poza funkcją
-LOE = [] # list of entries (needed to loadfromfile) 
+LOE = []  # list of entries (needed to loadfromfile)
+LOC = []  #list of comboboxes
 # endregion
 
 # region Font Styles
@@ -200,12 +201,7 @@ userInputResistance.insert(END, "0")
 
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
-
-def LoadFromFile(path):
-    with open(path, "r") as file:
-        for entry in LOE:
-            pass
-        
+   
 
 def ChangeSliderValue():
     ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
@@ -355,7 +351,25 @@ def SubmitButton():
 
 
 def LoadButton():
-    return
+    path = askopenfilename(initialdir="/", title="Select file", filetypes=[("Text files", "*.txt")])
+
+    with open(path, "r") as file:
+        for lineNum in range(0,5):
+            values = file.readline().split(" ")
+            values[-1] = values[-1].split("\n")[0]
+            
+            LOE[lineNum].delete(0, END)
+            LOE[lineNum].insert(0, values[1])
+            
+            if lineNum == 0:
+                cbVelocityS.current(cbVelocityS["values"].index(values[2]))
+                cbVelocityT.current(cbVelocityT["values"].index(values[3]))
+            elif lineNum == 1:
+                cbHeight.current(cbHeight["values"].index(values[2]))
+            elif lineNum == 2:
+                cbAngle.current(cbAngle["values"].index(values[2]))
+
+                
 
 
 def SaveButton():
