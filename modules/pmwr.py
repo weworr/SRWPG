@@ -73,4 +73,3 @@ def calculateFunctionGraph(initialVelocity, initialHeight, alpha, gravity, r):
     y = (initialHeight + np.tan(alpha) * x - gravity * x ** 2 / (2 * initialVelocity ** 2 * np.cos(alpha) ** 2))
 
     return {"x": x, "y": y}
-
