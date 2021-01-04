@@ -8,8 +8,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox as mbox
 from modules import conversion as conv
 
-# kolumny 0 (cokolwiek to znaczy)
-
 def GetListOfParameters():
     from numpy import pi
 
