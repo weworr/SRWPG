@@ -233,8 +233,10 @@ def ChangeSliderValue():
     """
     Changes slider position if entry was submitted
     """
-    ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
-
+    try:
+        ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
+    except ValueError:
+        mbox.showerror("Error", "Wrong input value")
 
 def ComboboxEvent(self):
     """
@@ -263,6 +265,7 @@ def ShowValuesOfSlider(self):
         time = float(ResultsInterface.userInputPoint.get())
     else:
         time = mode.xToTime(float(ResultsInterface.userInputPoint.get()), LOP["velocity"], LOP["angle"], LOP["resistance"])
+
 
     velocity = mode.velocity(LOP["velocity"], LOP["angle"], LOP["gravity"], time, LOP["resistance"])
     # Point Velocity
