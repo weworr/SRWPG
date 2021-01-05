@@ -393,21 +393,24 @@ def LoadButton():
     """
     path = askopenfilename(initialdir="/", title="Select file", filetypes=[("Text files", "*.txt")])
 
-    with open(path, "r") as file:
-        for lineNum in range(0,5):
-            values = file.readline().split(" ")
-            values[-1] = values[-1].split("\n")[0]
+    try:
+        with open(path, "r") as file:
+            for lineNum in range(0,5):
+                values = file.readline().split(" ")
+                values[-1] = values[-1].split("\n")[0]
             
-            LOE[lineNum].delete(0, END)
-            LOE[lineNum].insert(0, values[1])
+                LOE[lineNum].delete(0, END)
+                LOE[lineNum].insert(0, values[1])
             
-            if lineNum == 0:
-                cbVelocityS.current(cbVelocityS["values"].index(values[2]))
-                cbVelocityT.current(cbVelocityT["values"].index(values[3]))
-            elif lineNum == 1:
-                cbHeight.current(cbHeight["values"].index(values[2]))
-            elif lineNum == 2:
-                cbAngle.current(cbAngle["values"].index(values[2]))
+                if lineNum == 0:
+                    cbVelocityS.current(cbVelocityS["values"].index(values[2]))
+                    cbVelocityT.current(cbVelocityT["values"].index(values[3]))
+                elif lineNum == 1:
+                    cbHeight.current(cbHeight["values"].index(values[2]))
+                elif lineNum == 2:
+                    cbAngle.current(cbAngle["values"].index(values[2]))
+    except FileNotFoundError:
+        return
     SubmitButton()
 
 
