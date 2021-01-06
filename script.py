@@ -391,7 +391,7 @@ def LoadButton():
     Load button on click function,
     loads params from a file.
     """
-    path = askopenfilename(initialdir="/", title="Select file", filetypes=[("Text files", "*.txt")])
+    path = askopenfilename(initialdir=os.getcwd(), title="Select file", filetypes=[("Text files", "*.txt")])
 
     try:
         with open(path, "r") as file:
@@ -419,7 +419,7 @@ def SaveButton():
     Save button on click function,
     saves user inputs to a file and graph image.
     """
-    savedir = askdirectory(title='Select folder to save results')
+    savedir = askdirectory(initialdir=os.getcwd(), title='Select folder to save results')
     try:
         os.mkdir(savedir + "/PMS")
     except FileExistsError:
