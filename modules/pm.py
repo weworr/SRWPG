@@ -1,5 +1,4 @@
 # projectile motion with restiance
-import matplotlib.pyplot as plt
 import numpy as np
 from modules.conversion import sin, cos
 from modules.pmwr import endTimeCalculation
@@ -25,7 +24,9 @@ def yPoint(v0y, initialHeight, alpha, gravity, time, resistance):
 
 
 def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
-    time = (np.log(resistance * initialVelocity * sin(alpha) / gravity) + 1) / resistance
+    time = np.log((resistance * initialVelocity * abs(sin(alpha)) / gravity) + 1) / resistance
+    if alpha <= 0:
+        return{"x": 0, "y": initialHeight, "t": 0}
     v0y = initialVelocity * sin(alpha)
 
     x = xPoint(initialVelocity, alpha, time, resistance)
@@ -35,7 +36,7 @@ def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
 
 
 def xToTime(x, initialVelocity, alpha, resistance):
-    return - 1 * np.log(1 - resistance * x / (initialVelocity * cos(alpha))) / resistance
+    return np.log(abs(initialVelocity * cos(alpha) / (initialVelocity * cos(alpha) - resistance * x))) / resistance
 
 
 def rangeCalculation(initialVelocity, initialHeight, alpha, gravity, resistance):
