@@ -5,7 +5,7 @@ from tkinter import *
 from tkinter import messagebox
 import tkinter.font as tkFont
 import tkinter.ttk as ttk
-from tkinter.filedialog import askdirectory,askopenfilename
+from tkinter.filedialog import askdirectory, askopenfilename
 
 from numpy import pi
 import matplotlib.pyplot as plt
@@ -114,8 +114,6 @@ def ComboboxEvent(self):
     if ResultsInterface.cbPoint.get() == 't':
         ComboboxEvent.sliderRange = mode.endTimeCalculation(LOP["velocity"], LOP["height"], LOP["angle"],
                                                             LOP["gravity"])
-    # elif LOP["angle"] == pi/2 or LOP["angle"] == -pi/2:
-    #     ComboboxEvent.sliderRange = 0
     else:
         ComboboxEvent.sliderRange = mode.rangeCalculation(LOP["velocity"], LOP["height"], LOP["angle"], LOP["gravity"],
                                                           LOP["resistance"])
