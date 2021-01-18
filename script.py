@@ -104,7 +104,7 @@ def ChangeSliderValue():
     try:
         ComboboxEvent.slider.set(float(ResultsInterface.userInputPoint.get()))
     except ValueError:
-        mbox.showerror("Error", "Wrong input value")
+        messagebox.showerror("Error", "Wrong input value")
 
 
 def ComboboxEvent(self):
