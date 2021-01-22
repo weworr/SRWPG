@@ -2,6 +2,7 @@
 import numpy as np
 from modules.conversion import sin, cos
 
+
 def vertex(initialVelocity, initialHeight, alpha, gravity, r):
     if alpha == np.pi / 2:
         return {"y": initialVelocity **2 / 2*gravity, "x": 0, "t": initialVelocity / gravity}

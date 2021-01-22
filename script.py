@@ -34,7 +34,6 @@ def GetListOfParameters():
 
     :return: False - if user input isn't correct, True - otherwise.
     """
-    from numpy import pi
 
     try:
         whichValueError = " velocity "

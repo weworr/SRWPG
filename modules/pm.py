@@ -4,6 +4,18 @@ from modules.conversion import sin, cos
 from modules.pmwr import endTimeCalculation
 
 
+def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
+    time = np.log((resistance * initialVelocity * abs(sin(alpha)) / gravity) + 1) / resistance
+    if alpha <= 0:
+        return {"x": 0, "y": initialHeight, "t": 0}
+    v0y = initialVelocity * sin(alpha)
+
+    x = xPoint(initialVelocity, alpha, time, resistance)
+    y = yPoint(v0y, initialHeight, alpha, gravity, time, resistance)
+
+    return {"x": x, "y": y, "t": time}
+
+
 def velocity(initialVelocity, alpha, gravity, time, resistance):
     xVelocity = initialVelocity * np.exp(-1 * resistance * time) * cos(alpha)
     yVelocity = (initialVelocity * sin(alpha) + gravity / resistance) * np.exp(-1 * resistance * time) - gravity / resistance
@@ -21,18 +33,6 @@ def xPoint(initialVelocity, alpha, time, resistance):
 
 def yPoint(v0y, initialHeight, alpha, gravity, time, resistance):
     return initialHeight + (v0y / resistance) + gravity / (resistance ** 2) - gravity * time / resistance - ((resistance * v0y + gravity) / (resistance ** 2)) * np.exp(-1 * resistance * time)
-
-
-def vertex(initialVelocity, initialHeight, alpha, gravity, resistance):
-    time = np.log((resistance * initialVelocity * abs(sin(alpha)) / gravity) + 1) / resistance
-    if alpha <= 0:
-        return{"x": 0, "y": initialHeight, "t": 0}
-    v0y = initialVelocity * sin(alpha)
-
-    x = xPoint(initialVelocity, alpha, time, resistance)
-    y = yPoint(v0y, initialHeight, alpha, gravity, time, resistance)
-    
-    return {"x": x, "y": y, "t": time}
 
 
 def xToTime(x, initialVelocity, alpha, resistance):
