@@ -39,8 +39,14 @@ def GetListOfParameters():
         whichValueError = " velocity "
         velocity = float(userInputVelocity.get())
 
+        if velocity < 0:
+            messagebox.showerror("Error", "Velocity can't be lower than 0")
+
         whichValueError = " height "
         height = float(userInputHeight.get())
+
+        if height < 0:
+            messagebox.showerror("Error", "Height can't be lower than 0")
 
         whichValueError = " angle "
         angle = eval(userInputAngle.get())
