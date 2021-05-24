@@ -464,7 +464,7 @@ enter = Button(rightTopFrame, text="Submit", width=15, font=fontStyleInteractive
 enter.grid(row=6, column=2, columnspan=5, padx=15)
 # endregion
 
-# Results Interface
+# #Results Interface
 
 horizontalLine = Frame(rightFrame, height=1, width=380, bg="black")
 horizontalLine.pack()
